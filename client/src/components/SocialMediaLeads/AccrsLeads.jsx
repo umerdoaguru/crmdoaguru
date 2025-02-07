@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
+import { useSelector } from 'react-redux';
 
 
 function Accrs() {
@@ -20,13 +21,16 @@ function Accrs() {
     employeephone: "",
     createdTime:"",
   });
-  const [loadingbutton , setLoadingButton] = useState(false)
-
-console.log(responses, 'Line number 7 data check');
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   const fetchResponses = async () => {
     try {
-      const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/get-responses');
+      const response = await axios.get('https://crm.dentalguru.software/api/get-responses-admin',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       console.log('Response received from API:', response.data);
       setResponses(response.data);   
     } catch (error) {
@@ -35,7 +39,12 @@ console.log(responses, 'Line number 7 data check');
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -43,7 +52,12 @@ console.log(responses, 'Line number 7 data check');
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeadsAssigned(response.data);
       // console.log(leadsAssigned);
     } catch (error) {
@@ -90,8 +104,8 @@ console.log(responses, 'Line number 7 data check');
       return; // Stop further execution if the field is empty
     }
     try {
-      setLoadingButton(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      setLoading(true)
+      await axios.post("https://crm.dentalguru.software/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,
@@ -129,14 +143,14 @@ console.log(responses, 'Line number 7 data check');
 const formattedDate = moment(currentLead.createdTime).format("DD-MM-YYYY"); // Format the date as 'DD-MM-YYYY'
 
 // Generate the WhatsApp link with the formatted date
-const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%2099%20Acres%0A6)%20Address:%20${selectedLead.address}%0A7)%20Subject:%20${selectedLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%2099%20Acres%0A6)%20Address:%20${selectedLead.address}%0A7)%20Project:%20${selectedLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
 // Open WhatsApp link
 window.open(whatsappLink, "_blank");
 
-setLoadingButton(false)
+setLoading(false)
     } catch (error) {
-      setLoadingButton(false)
+      setLoading(false)
       console.error("Error adding lead:", error);
     }
   };
@@ -335,7 +349,7 @@ setLoadingButton(false)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Subject</label>
+              <label className="block text-gray-700">Project</label>
               <input
                 type="text"
                 name="subject"
@@ -384,9 +398,9 @@ setLoadingButton(false)
             <div className="flex justify-end">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-                onClick={saveChanges} disabled = {loadingbutton}
+                onClick={saveChanges} disabled = {loading}
               >
-                {loadingbutton ? 'Save...' : 'Save'}
+                    {loading ? 'Save...' : 'Save'}
               </button>
               <button
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"

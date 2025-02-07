@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const FormInput = ({ setShowForm,onFormSubmit }) => {
+const 
+
+
+
+FormInput = ({ setShowForm,onFormSubmit }) => {
   const [formId, setFormId] = useState('');
   const [formName, setFormName] = useState('');
   const [success, setSuccess] = useState('');
@@ -13,7 +17,7 @@ const FormInput = ({ setShowForm,onFormSubmit }) => {
 
     try {
       // Make POST request to save form ID and form name
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/forms', {
+      const response = await axios.post('https://crm.dentalguru.software/api/forms', {
         formId,
         formName
       });

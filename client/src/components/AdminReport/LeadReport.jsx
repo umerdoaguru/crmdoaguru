@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate"; // Import react-paginate
 // import Sider from "../Sider";
 import Header from "../../pages/Quotation/Header";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 function LeadReport() {
     const [leads, setLeads] = useState([]);
@@ -19,6 +20,10 @@ function LeadReport() {
         "name",
         "phone",
         "leadSource",
+        "remark_status",
+        "answer_remark",
+        "meeting_status",
+        "assignedBy",
         "lead_status",
         "address",
         "booking_amount",
@@ -30,7 +35,7 @@ function LeadReport() {
         "quotation_status",
         "reason",
         "registry",
-        "status",
+      
         "subject",
         "visit",
         "d_closeDate",
@@ -40,6 +45,8 @@ function LeadReport() {
       ]);
     const [currentPage, setCurrentPage] = useState(0);
     const leadsPerPage = 6;
+    const adminuser = useSelector((state) => state.auth.user);
+    const token = adminuser.token;
   
     // Fetch leads and employees from the API
     useEffect(() => {
@@ -49,7 +56,12 @@ function LeadReport() {
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+        const response = await axios.get("https://crm.dentalguru.software/api/leads",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setLeads(response.data);
         setFilteredLeads(response.data);
       } catch (error) {
@@ -59,7 +71,12 @@ function LeadReport() {
   
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+        const response = await axios.get("https://crm.dentalguru.software/api/employee",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         setEmployees(response.data);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -115,6 +132,10 @@ function LeadReport() {
             name: "Name",
             phone: "Phone",
             leadSource: "Lead Source",
+            remark_status: "Remark Status",
+            answer_remark: "Answer Remark",
+            meeting_status: "Meeting Status",
+            assignedBy: "Assigned By",
             lead_status: "Lead Status",
             address: "Address",
             booking_amount: "Booking Amount",
@@ -126,8 +147,8 @@ function LeadReport() {
             quotation_status: "Quotation Status",
             reason: "Reason",
             registry: "Registry",
-            status: "Status",
-            subject: "Subject",
+           
+            subject: "Project",
             visit: "Visit",
             d_closeDate: "Close Date",
             createdTime: "Assigned Date",
@@ -160,8 +181,8 @@ function LeadReport() {
   
       const worksheet = XLSX.utils.json_to_sheet(completedLeads);
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Leads Report");
-      XLSX.writeFile(workbook, "FilteredLeadsReport.xlsx");
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Lead of ${duration} Report`);
+      XLSX.writeFile(workbook,`Lead of ${duration} Report.xlsx`);
     };
   
     // Pagination logic

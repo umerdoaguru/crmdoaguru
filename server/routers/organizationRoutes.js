@@ -21,6 +21,8 @@ const {
   updateAdmin,
   deleteAdmin,
 } = require("../controllers/OrgsnizationActions");
+const authenticateAdmin = require("../Middleware/authenticateAdmin");
+const authenticateSuperAdmin = require("../Middleware/authenticateSuperAdmin");
 
 // Route to add an organization (with file upload)
 router.post(
@@ -49,10 +51,10 @@ router.put(
 router.post("/addEmployee", addEmployee);
 
 // Route to get all employees
-router.get("/getAllEmployees", getAllEmployees);
+router.get("/getAllEmployees",authenticateAdmin, getAllEmployees);
 
 // Route to get an employee by ID
-router.get("/getEmployeeById/:employeeId", getEmployeeById);
+router.get("/getEmployeeById/:employeeId",authenticateAdmin, getEmployeeById);
 
 // Route to update an employee by ID
 router.put("/updateEmployee/:id", updateEmployee);
@@ -70,7 +72,7 @@ router.delete("/deleteEmployee/:id", deleteEmployee);
 router.post("/addAdmin", addAdmin);
 
 // Route to get all admins
-router.get("/getAllAdmins", getAllAdmins);
+router.get("/getAllAdmins",authenticateSuperAdmin, getAllAdmins);
 
 // Route to get an admin by ID
 router.get("/getAdminById/:adminId", getAdminById);

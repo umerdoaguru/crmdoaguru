@@ -10,7 +10,7 @@ function ServicenameList() {
 
   const fetchServicelist = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/servicelist`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/servicelist`);
       if (response.status === 200) {
         SetServiceList(response.data);
       }

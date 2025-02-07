@@ -14,6 +14,8 @@ const Router = require("./routers/userdataroutes");
 const Router5 = require("./routers/response_99acres");
 const Router6 = require("./routers/FacebookRoutes");
 const Router7 = require("./routers/WebsiteRoutes");
+const authenticateAdmin = require("./Middleware/authenticateAdmin");
+const authenticateSuperAdmin = require("./Middleware/authenticateSuperAdmin");
 
 const app = express();
 
@@ -105,7 +107,7 @@ const convertXMLToJSON = (xml) => {
       Phone: getValueBetweenTags(respXML, "Phone"),
     };
 
-    // Combine into sponse object
+    // Combine into one response object
     responses.push({
       QueryDetails: qryDtl,
       ContactDetails: cntctDtl,
@@ -190,7 +192,7 @@ const fetchDataAndSave = async () => {
   try {
     const url =
       "https://www.99acres.com/99api/v1/getmy99Response/OeAuXClO43hwseaXEQ/uid/";
-    const xmlRequest = `<?xml version='1.0'?><query><user_name>USERNAME</user_name><pswd>PASSWORD</pswd><start_date>${formattedStartDate}</start_date><end_date>${formattedEndDate}</end_date></query>`;
+    const xmlRequest = `<?xml version='1.0'?><query><user_name>onenirvana</user_name><pswd>onerealty@123</pswd><start_date>${formattedStartDate}</start_date><end_date>${formattedEndDate}</end_date></query>`;
 
     // Make the API request
     const response = await axios.post(url, { xml: xmlRequest }, {
@@ -263,9 +265,93 @@ const fetchDataAndSave = async () => {
 };
 
 // Call the function initially
-fetchDataAndSave();
-// Fetch data every 10 minutes
-setInterval(fetchDataAndSave, 10 * 60 * 1000); // 10 minutes
+// fetchDataAndSave();
+// // Fetch data every 10 minutes
+// setInterval(fetchDataAndSave, 10 * 60 * 1000); // 10 minutes
+
+let storedToken = null;
+let tokenExpirationTime = null;
+
+// Function to fetch the token from the Realty website
+const getRealtyToken = async () => {
+    try {
+        const response = await axios.post('https://one-realty.in/api/login', {
+            email: 'umerqureshi786786@gmail.com',  // Use actual admin email
+            password: 'umer@321'     // Use actual password
+        });
+
+        const token = response.data.user.token;
+        const expirationTime = Date.now() + 6 * 60 * 60 * 1000; // 6 hours from now
+
+        // Store the token and expiration time
+        storedToken = token;
+        tokenExpirationTime = expirationTime;
+
+        console.log("Token fetched and stored successfully.");
+    } catch (error) {
+        console.error('Login to Realty Website failed:', error.response?.data || error.message);
+    }
+};
+
+// Middleware to check if the token is expired and refresh if necessary
+const checkTokenExpiration = async (req, res, next) => {
+    const currentTime = Date.now();
+
+    if (storedToken && tokenExpirationTime && currentTime < tokenExpirationTime) {
+        // Token is still valid, proceed
+        next();
+    } else {
+        // Token expired or not set, refresh it
+        console.log("Token expired or not found, refreshing...");
+        await getRealtyToken();
+        next();
+    }
+};
+
+// Endpoint to get user data from the Realty website
+app.get('/api/user-data-admin',authenticateAdmin, checkTokenExpiration, async (req, res) => {
+    try {
+        const response = await axios.get('https://one-realty.in/api/user-data', {
+            headers: {
+                'Authorization': `Bearer ${storedToken}`
+            }
+        });
+
+        res.status(200).json(response.data);
+        console.log(response.data);
+        
+    } catch (error) {
+        console.error('Error fetching Realty Website data:', error.response?.data || error.message);
+        res.status(500).json({ success: false, message: 'Error fetching data from Realty Website' });
+    }
+});
+app.get('/api/user-data-super-admin',authenticateSuperAdmin, checkTokenExpiration, async (req, res) => {
+    try {
+        const response = await axios.get('https://one-realty.in/api/user-data', {
+            headers: {
+                'Authorization': `Bearer ${storedToken}`
+            }
+        });
+
+        res.status(200).json(response.data);
+        console.log(response.data);
+        
+    } catch (error) {
+        console.error('Error fetching Realty Website data:', error.response?.data || error.message);
+        res.status(500).json({ success: false, message: 'Error fetching data from Realty Website' });
+    }
+});
+
+
+// setInterval(() => {
+//     getRealtyToken();
+// }, 1 * 60 * 60 * 1000); 
+// // Initialize token fetching on server startup
+// getRealtyToken();
+
+
+
+
 
 
 const PORT = process.env.PORT;

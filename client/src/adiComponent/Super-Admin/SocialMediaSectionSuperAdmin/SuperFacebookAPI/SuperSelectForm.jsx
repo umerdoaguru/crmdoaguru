@@ -9,7 +9,7 @@ const SuperFormSelector = ({  setLoading, setMe, setError, onFormSelect  }) => {
   // Fetch forms from backend
   const fetchForms = async () => {
     try {
-      const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/forms');
+      const response = await axios.get('https://crm.dentalguru.software/api/forms');
       setForms(response.data.reverse());
     } catch (err) {
       console.error('Error fetching forms:', err);
@@ -45,7 +45,7 @@ const SuperFormSelector = ({  setLoading, setMe, setError, onFormSelect  }) => {
 
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+      const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
         formId: selectedFormId
       });
       setError('Fetch leads Done');

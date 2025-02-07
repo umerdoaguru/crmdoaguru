@@ -17,13 +17,19 @@ import styled from "styled-components";
 const EmployeeInvoiceGraph = () => {
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState([]); // Update to store structured data
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);  
+  const token = EmpId?.token;
   useEffect(() => {
     const getAppointList = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId}`
+          `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         const invoiceList = response.data;
 

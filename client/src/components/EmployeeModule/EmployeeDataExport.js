@@ -36,7 +36,7 @@
 //   const fetchLeads = async () => {
 //     try {
 //       const response = await axios.get(
-//         `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`
+//         `https://crm.dentalguru.software/api/employe-leads/${EmpId}`
 //       );
 //       setLeads(response.data);
 //     } catch (error) {
@@ -46,7 +46,7 @@
 
 //   // const fetchEmployee = async () => {
 //   //   try {
-//   //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`);
+//   //     const response = await axios.get(`https://crm.dentalguru.software/api/employee`);
 //   //     setEmployee(response.data);
 //   //   } catch (error) {
 //   //     console.error("Error fetching employee data:", error);
@@ -56,7 +56,7 @@
 //   const fetchQuotation = async () => {
 //     try {
 //       const response = await axios.get(
-//         `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byEmploye/${EmpId}`
+//         `https://crm.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`
 //       );
 //       setQuotation(response.data);
 //     } catch (error) {
@@ -67,7 +67,7 @@
 //   const fetchInvoice = async () => {
 //     try {
 //       const response = await axios.get(
-//         `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId}`
+//         `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId}`
 //       );
 //       setInvoice(response.data);
 //     } catch (error) {
@@ -256,14 +256,20 @@ function DataExport() {
 
 
   const [visit, setVisit] = useState([]);
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
 
 
 
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`
+        `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log("setLeads", response.data);
       setLeads(response.data);
@@ -275,7 +281,12 @@ function DataExport() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byEmploye/${EmpId}`
+        `https://crm.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setQuotation(response.data);
     } catch (error) {
@@ -286,7 +297,12 @@ function DataExport() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId}`
+        `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setInvoice(response.data);
     } catch (error) {
@@ -296,7 +312,12 @@ function DataExport() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employebyid-visit/${EmpId}`
+        `https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
       setVisit(response.data);

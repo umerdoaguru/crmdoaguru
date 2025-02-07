@@ -15,7 +15,7 @@ const SingleOrganization = () => {
   const fetchOrganization = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/getOrganization/${id}`
+        `https://crm.dentalguru.software/api/getOrganization/${id}`
       );
       setOrganization(response.data.organization);
     } catch (error) {

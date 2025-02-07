@@ -108,6 +108,11 @@ const {
   getInvoiceDate,
   getAllInvoice,
 } = require("../controllers/InvoiceController");
+const authenticateEmployee = require("../Middleware/authenticateEmployee");
+const authenticateAdmin = require("../Middleware/authenticateAdmin");
+const { AllgetEmployeebyvisit, getEmployeeLeads, employeeProfile, getEmployeeFollow_Up, getEmployeeRemark, getEmployeeVisit, getLeadQuotation } = require("../controllers/employeController");
+const authenticateSuperAdmin = require("../Middleware/authenticateSuperAdmin");
+const { getAllEmployees } = require("../controllers/OrgsnizationActions");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -129,9 +134,9 @@ router.post("/quotation", Quotation);
 router.delete("/quotation/:id", deleteQuotation);
 router.post("/services/:id", addServices);
 router.delete("/services/:serviceId", deleteService);
-router.get("/quotation/:id", Quotationviaid);
+router.get("/quotation/:id",authenticateEmployee, Quotationviaid);
 // router.get("/quotation",GetQuotation);
-router.get("/quotation-data", GetQuotation);
+router.get("/quotation-data",authenticateEmployee, GetQuotation,);
 
 //Route to Quotation Information Form 
 router.post("/quotation-information-form", quotationInformationForm)
@@ -218,14 +223,15 @@ router.put("/invoice-update-notes", InvoiceupdateNote);
 
 router.post("/leads", createLead);
 // router.post('/facebook-leads',  socialmediaLead);
-router.get("/leads/:id", getleadbyid);
-router.get("/leads", getLeads);
+router.get("/leads/:id",authenticateAdmin, getleadbyid);
+router.get("/leads",authenticateAdmin, getLeads);
 router.get("/leads-visits/:employeeId", getLeadsByIdVisit);
 router.get("/leads-all-visits", getLeadsVisit);
 router.put("/leads/:leadId", updateLead);
 router.delete("/leads/:leadId", deleteLead);
 
-router.get("/employee", employeeData);
+router.get("/employee",authenticateAdmin, employeeData);
+router.get("/employee-super-admin",authenticateSuperAdmin, employeeData);
 router.get("/get-invoice-data", getAllInvoice);
 router.get("/get-quotation-data", getAllQuotation);
 
@@ -248,5 +254,29 @@ router.post("/admin-login", adminLogin);
 
 router.post("/employee-login", employeelogin);
 router.post("/admin-login", adminLogin);
+router.get("/quotation-data-admin",authenticateAdmin, GetQuotation,);
+router.get("/quotation-admin/:id",authenticateAdmin, Quotationviaid);
+router.get("/employe-all-visit-admin",authenticateAdmin, AllgetEmployeebyvisit);
+router.get("/employe-leads-admin/:id",authenticateAdmin, getEmployeeLeads);
+router.get("/employe-follow-up-admin/:id",authenticateAdmin, getEmployeeFollow_Up);
+router.get("/remarks-admin/:id",authenticateAdmin, getEmployeeRemark);
+router.get("/employe-visit-admin/:id",authenticateAdmin, getEmployeeVisit);
+router.get("/get-quotation-byLead-admin/:id",authenticateAdmin, getLeadQuotation);
+
+
+router.get("/leads-super-admin",authenticateSuperAdmin, getLeads);
+router.get("/employe-all-visit-super-admin",authenticateSuperAdmin, AllgetEmployeebyvisit);
+router.get("/quotation-data-super-admin",authenticateSuperAdmin, GetQuotation,);
+router.get("/quotation-super-admin/:id",authenticateSuperAdmin, Quotationviaid);
+router.get("/getAllEmployees-super-admin",authenticateSuperAdmin, getAllEmployees);
+router.get("/employe-leads-super-admin/:id",authenticateSuperAdmin, getEmployeeLeads);
+router.get("/employeeProfile-super-admin/:id",authenticateSuperAdmin, employeeProfile);
+router.get("/employee-super-admin",authenticateSuperAdmin, employeeData);
+router.get("/employe-follow-up-super-admin/:id",authenticateSuperAdmin, getEmployeeFollow_Up);
+router.get("/remarks-super-admin/:id",authenticateSuperAdmin, getEmployeeRemark);
+router.get("/leads-super-admin/:id",authenticateSuperAdmin, getleadbyid);
+
+router.get("/employe-visit-super-admin/:id",authenticateSuperAdmin, getEmployeeVisit);
+router.get("/get-quotation-byLead-super-admin/:id",authenticateSuperAdmin, getLeadQuotation);
 
 module.exports = router;

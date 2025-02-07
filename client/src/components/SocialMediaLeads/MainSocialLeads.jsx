@@ -20,7 +20,7 @@ function MainSocialLeads() {
    <Sider/>
 
    <div className="container 2xl:w-[93%] 2xl:ml-32 ">
-      <h1 className="text-2xl text-center mt-[5rem] font-medium">SocialMedia Leads</h1>
+      <h1 className="text-2xl text-center mt-[5rem] font-medium">Social Media Leads</h1>
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
         <div className="flex flex-wrap justify-around mt-5">

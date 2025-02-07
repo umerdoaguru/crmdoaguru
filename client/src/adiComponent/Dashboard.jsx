@@ -12,6 +12,8 @@ import axios from "axios";
 import LeadsGraph from "./LeadsGraph";
 import QuotationGraph from "./QuotationGraph";
 import AdminOverviewDash from "./AdminOverviewDash";
+import DealGraph from "./DealClosedGraph";
+import DealClosedGraph from "./DealClosedGraph";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,7 +23,7 @@ const Dashboard = () => {
   };
   const getInvoiceData = () => {
     try {
-      const response = axios.get("https://crmdemo.vimubds5.a2hosted.com/api/invoiceData");
+      const response = axios.get("https://crm.dentalguru.software/api/invoiceData");
     } catch (err) {}
   };
 
@@ -49,7 +51,7 @@ const Dashboard = () => {
             <LeadsGraph />
             <Invoice />
 
-            <QuotationGraph />
+            <DealClosedGraph/>
           </div>
           <LeadsReport />
           {/* <ToDoList /> */}

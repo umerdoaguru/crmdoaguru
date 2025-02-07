@@ -119,13 +119,14 @@ const updateLeadStatus = async (req, res) => {
       quotation_status,
 
       deal_status,
+      meeting_status,
 
       booking_amount,
       payment_mode,
       registry,
 
       reason,
-      status,
+     
       follow_up_status,
 
       d_closeDate, // Add d_closeDate (Deal Close Date) to destructured body
@@ -136,11 +137,12 @@ const updateLeadStatus = async (req, res) => {
       quotation_status,
 
       deal_status,
+      meeting_status,
       booking_amount,
       payment_mode,
       registry,
       reason,
-      status,
+     
       follow_up_status,
 
       d_closeDate, // Log d_closeDate
@@ -152,11 +154,12 @@ const updateLeadStatus = async (req, res) => {
                       quotation_status = ?, 
                       
                       deal_status = ?, 
+                      meeting_status=?,
                       booking_amount = ?,
       payment_mode = ?,
       registry = ?,
                       reason = ?, 
-                      status = ?, 
+                     
                       follow_up_status = ?, 
                    
                       d_closeDate = ?      
@@ -170,11 +173,12 @@ const updateLeadStatus = async (req, res) => {
           quotation_status,
 
           deal_status,
+          meeting_status,
           booking_amount,
       payment_mode,
       registry,
           reason,
-          status,
+        
           follow_up_status,
 
           d_closeDate, // Pass d_closeDate to the query
@@ -224,7 +228,7 @@ const employeeProfile = async (req, res) => {
   try {
     const { id } = req.params;
     const sql =
-      "SELECT employeeId, name, email, phone,photo, position, createdTime FROM employee WHERE employeeId = ?";
+      "SELECT employeeId, name, email, phone, position, createdTime FROM employee WHERE employeeId = ?";
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
@@ -662,6 +666,282 @@ const updateOnlyFollowUpStatus = async (req, res) => {
 
 
 
+
+const createRemark = async (req, res) => {
+  try {
+    const { lead_id, name, employee_name, employeeId, remark_status, date } = req.body;
+    
+
+    if (!lead_id || !remark_status || !date) {
+      return res
+        .status(400)
+        .json({ error: "Lead ID, remark status, and date are required." });
+    }
+
+    // Insert remark
+    const sqlRemark = `
+      INSERT INTO remark (
+        lead_id, name, employee_name, employeeId, remark_status, date
+      ) VALUES (?, ?, ?, ?, ?, ?)`;
+
+    const resultRemark = await new Promise((resolve, reject) => {
+      db.query(
+        sqlRemark,
+        [lead_id, name, employee_name, employeeId, remark_status, date],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+
+    // Get the newly created remark ID
+    const remarkId = resultRemark.insertId;
+
+    // Update the leads table with the new remarks_id
+    const sqlUpdateLeads = `
+      UPDATE leads SET 
+        remark_id = ?, 
+        remark_status = ?,
+        answer_remark = 'pending'
+      WHERE lead_id = ?`;
+
+    await new Promise((resolve, reject) => {
+      db.query(sqlUpdateLeads, [remarkId, remark_status, lead_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Remark created and lead updated successfully",
+      remark: {
+        id: remarkId,
+        lead_id,
+        remark_status,
+      },
+    });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+
+
+};
+
+const updateRemark = (req, res) => {
+  const {
+    id, // Unique identifier for the remark
+    lead_id,
+    name,
+    employee_name,
+    employeeId,
+    remark_status,
+ 
+    date,
+  } = req.body;
+  console.log( id, // Unique identifier for the remark
+    lead_id,
+    name,
+    employee_name,
+    employeeId,
+    remark_status,
+
+    date,);
+  
+
+
+
+  const sql = `UPDATE remark SET 
+    lead_id = ?, 
+    name = ?, 
+    employee_name = ?, 
+    employeeId = ?, 
+    remark_status = ?, 
+   
+    date = ? 
+    WHERE id = ?`;
+
+  db.query(
+    sql,
+    [lead_id, name, employee_name, employeeId, remark_status, date, id], // Include answer_remark here
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: "Error updating remark data" });
+      } else if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Remark not found" });
+      } else {
+        return res
+          .status(200)
+          .json({ success: true, message: "Remark updated successfully" });
+      }
+    }
+  );
+};
+
+
+const deleteRemark = (req, res) => {
+  const { id } = req.params;
+
+  // Basic validation
+  if (!id) {
+    return res.status(400).json({ error: "Remark ID is required" });
+  }
+
+  const sql = `DELETE FROM remark WHERE id = ?`;
+
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error deleting remark" });
+    } else if (results.affectedRows === 0) {
+      res.status(404).json({ error: "Remark not found" });
+    } else {
+      res
+        .status(200)
+        .json({ success: true, message: "Remark deleted successfully" });
+    }
+  });
+};
+
+const getEmployeeRemark= async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sql = "SELECT * FROM remark WHERE lead_id = ?";
+
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [id], (err, results) => {
+        if (err) {
+          reject(err); // Reject the promise with the error
+        } else {
+          resolve(results); // Resolve the promise with the results
+        }
+      });
+    });
+    // Send the result as a response
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Database query error:", err); // Log the error for debugging
+    res.status(500).json({ message: "Internal Server Erro, error: errr" });
+  }
+};
+
+
+const updateOnlyRemarkStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { remark_status } = req.body;
+
+    console.log(remark_status, id);
+
+    const sql = `UPDATE leads SET 
+    remark_status = ?
+                    
+    WHERE lead_id = ?`;
+
+    await new Promise((resolve, reject) => {
+      db.query(sql, [remark_status, id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    res.status(200).json({ message: "Remarks Status updated successfully" });
+  } catch (error) {
+    console.error("Database update error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: err });
+  }
+};
+const updateOnlyRemarkAnswerStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { answer_remark } = req.body;
+
+    console.log(answer_remark, id);
+
+    const sql = `UPDATE leads SET 
+    answer_remark = ?
+                    
+    WHERE lead_id = ?`;
+
+    await new Promise((resolve, reject) => {
+      db.query(sql, [answer_remark, id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    res.status(200).json({ message: "Answer Remark updated successfully" });
+  } catch (error) {
+    console.error("Database update error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: err });
+  }
+};
+
+
+const updateOnlyRemarkAnswer = async (req, res) =>{
+  
+  try {
+  const { lead_id, answer_remark, remark_id } = req.body;
+
+  console.log(`Lead ID: ${lead_id}, Answer Remark: ${answer_remark}, Remark ID: ${remark_id}`);
+
+  // SQL to update `answer_remark` in the `leads` table
+  const sqlUpdateLeads = `
+    UPDATE leads SET 
+      answer_remark = ? 
+    WHERE lead_id = ?`;
+
+  // SQL to update `answer_remark` in the `remark` table
+  const sqlUpdateRemark = `
+    UPDATE remark SET 
+      answer_remark = ? 
+    WHERE id = ?`;
+
+  // Execute the first query to update `leads` table
+  await new Promise((resolve, reject) => {
+    db.query(sqlUpdateLeads, [answer_remark, lead_id], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
+  // Execute the second query to update `remark` table
+  await new Promise((resolve, reject) => {
+    db.query(sqlUpdateRemark, [answer_remark, remark_id], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
+  res.status(200).json({ message: "Answer Remark status updated successfully in both tables" });
+} catch (error) {
+  console.error("Database update error:", error);
+  res.status(500).json({ message: "Internal Server Error", error });
+}
+
+}
+
+
+
 module.exports = {
   getEmployeeInvoice,
   getEmployeeLeads,
@@ -683,5 +963,5 @@ module.exports = {
   getEmployeebyidvisit,
   AllgetEmployeebyvisit,
   updateOnlyVisitStatus,
-  updateOnlyFollowUpStatus
+  updateOnlyFollowUpStatus,createRemark,updateRemark,deleteRemark,getEmployeeRemark,updateOnlyRemarkStatus,updateOnlyRemarkAnswer,updateOnlyRemarkAnswerStatus
 };

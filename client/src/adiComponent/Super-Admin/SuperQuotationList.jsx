@@ -15,12 +15,18 @@ const SuperQuotationList = () => {
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const navigate = useNavigate()
-
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   useEffect(() => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+          `https://crm.dentalguru.software/api/quotation-data-super-admin`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setQuotations(response.data);
         console.log(quotations);
@@ -74,7 +80,7 @@ const SuperQuotationList = () => {
 
     try {
       // API call to update status in the backend
-      await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/update-quotation-status`, {
+      await axios.post(`https://crm.dentalguru.software/api/update-quotation-status`, {
         id: id, // Send the quotation ID
         status: newStatus, // Send the updated status
       });
@@ -125,7 +131,7 @@ const SuperQuotationList = () => {
               placeholder="Filter by Quotation Name"
               value={filterText}
               onChange={handleFilterChange}
-              className="form-input border-gray-300 border p-2  rounded-md shadow-sm w-full max-w-md"
+              className="form-input border-gray-300 rounded-md shadow-sm w-full max-w-md"
             />
           </div>
 

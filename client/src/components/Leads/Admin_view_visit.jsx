@@ -21,6 +21,8 @@ const Admin_view_visit = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   useEffect(() => {
     fetchvisit();
@@ -29,7 +31,12 @@ const Admin_view_visit = () => {
   const fetchvisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`
+        `https://crm.dentalguru.software/api/employe-visit-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setVisit(response.data);
       console.log(response);
@@ -45,7 +52,7 @@ const Admin_view_visit = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`
+          `https://crm.dentalguru.software/api/employe-visit/${id}`
         );
         if (response.status === 200) {
           console.log("visit deleted successfully");
@@ -79,7 +86,7 @@ const Admin_view_visit = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/employe-visit`, modalData);
+      const response = await axios.put(`https://crm.dentalguru.software/api/employe-visit`, modalData);
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
         setRender(!render); // Refresh the list after updating

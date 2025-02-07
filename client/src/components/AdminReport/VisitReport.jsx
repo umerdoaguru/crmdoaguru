@@ -32,7 +32,8 @@ const VisitReport = () => {
 
   ]);
   
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   // Fetch leads from the API
   useEffect(() => {
@@ -43,7 +44,12 @@ const VisitReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit`
+        `https://crm.dentalguru.software/api/employe-all-visit-admin`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       // Filter out leads where visit is "Pending"
       const nonPendingLeads = response.data.filter(
@@ -58,7 +64,12 @@ const VisitReport = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -145,8 +156,8 @@ const VisitReport = () => {
     // Generate Excel file
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Visit Report");
-    XLSX.writeFile(workbook, "VisitReport.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Visit of ${duration} Report`);
+    XLSX.writeFile(workbook, `Visit of ${duration} Report.xlsx`);
   };
 
   // Pagination logic

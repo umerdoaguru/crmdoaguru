@@ -15,7 +15,7 @@ import QuotationList from "../pages/Quotation/QuotationList";
 import AdminQuotationVIew from "../pages/Quotation/AdminQuotationVIew";
 
 import SuperDash from "../adiComponent/SuperDash";
-import AdminManagement from "../adiComponent/AdminManagement";
+// import AdminManagement from "../adiComponent/AdminManagement";
 import SuperAdminLead from "../adiComponent/Super-Admin/SuperAdminLead";
 import SuperAdEmployeemanagement from "../adiComponent/Super-Admin/SuperAdEmployeemanagement";
 import SuperQuotationList from "../adiComponent/Super-Admin/SuperQuotationList";
@@ -39,9 +39,12 @@ import Super_view_quotations from "../adiComponent/Super-Admin/Super_view_quotat
 import SuperDataExport from "../adiComponent/Super-Admin/SuperDataExport";
 import Super_view_followup from "../adiComponent/Super-Admin/Super_view_followup";
 import SuperMainSocialLeads from "../adiComponent/Super-Admin/SocialMediaSectionSuperAdmin/SuperMainSocialLeads";
+import Super_view_remarks from "../adiComponent/Super-Admin/Super_view_remaks";
+import SuperEmployeedatabyid from "../adiComponent/Super-Admin/SuperEmployeedatabyid";
 
 function SuperAdminRoutes() {
   const user = useSelector((state) => state.auth.user);
+  
   return (
     <>
       <Routes>
@@ -56,10 +59,10 @@ function SuperAdminRoutes() {
         <Route path="/super-admin-employee-management" element={<SuperAdEmployeemanagement />} />
         <Route path="/super-admin-AdminManagement" element={<Super_Admin_Adminmanagement />} />
         <Route path="/super-admin-employee-list" element={<SuperEmployeeList />} />
-        <Route path="/super-admin-employee-leads/:id" element={<SuperEmployeeLeads />} />
+        <Route path="/super-admin-employee-leads" element={<SuperEmployeeLeads />} />
 {/*         
         <Route path="/super-admin-quotation-section" element={<CreateCompanyProfile />} /> */}
-        <Route
+        <Route 
           path="/super-admin-quotationlist"
           element={<SuperQuotationList />}
         />
@@ -69,20 +72,28 @@ function SuperAdminRoutes() {
         />
         <Route path="/super-admin-reporting" element={<SuperReports />} />
         <Route
-          path="/super-admin-lead-single-data/:id"
+          path="/super-admin-lead-single-data"
           element={<Super_Single_Lead_Profile />}
         />
         <Route
-          path="/super_view_visit/:id"
-          element={<Super_view_visit />}
+          path="/super-admin-lead-single-data/:id"
+          element={<SuperEmployeedatabyid />}
         />
         <Route
           path="/super_view_visit/:id"
           element={<Super_view_visit />}
         />
         <Route
-          path="/super_view_follow_up/:id"
+          path="/super_view_visit"
+          element={<Super_view_visit />}
+        />
+        <Route
+          path="/super_view_follow_up"
           element={<Super_view_followup/>}
+        />
+        <Route
+          path="/super_view_remarks"
+          element={<Super_view_remarks/>}
         />
         <Route
           path="/super-admin-employee-single/:employeeId"

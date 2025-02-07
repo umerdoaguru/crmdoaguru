@@ -15,7 +15,9 @@ import styled from "styled-components";
 
 const EmployeeCloseGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+
+  const token = EmpId?.token;
 
   // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
@@ -42,7 +44,7 @@ const EmployeeCloseGraph = () => {
       const matchedLeads = fetchedData.filter(
         (item) =>
           item.d_closeDate.split("T")[0] === formattedDate &&
-          item.deal_status?.trim().toLowerCase() !== "pending"
+          item.deal_status?.trim().toLowerCase() === "close" 
       );
 
       console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
@@ -61,7 +63,12 @@ const EmployeeCloseGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`
+        `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       const data = response.data;
 
@@ -76,13 +83,12 @@ const EmployeeCloseGraph = () => {
 
   useEffect(() => {
     fetchData();
-  }, [EmpId]);
+  }, []);
 
   return (
     <>
-     <div className="">
-      
-     <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white">
+    <div className="mx-2">
+      <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white">
         <h2 className="text-xl font-bold mb-2">Closed Deal Overview</h2>
         <p className="text-sm text-gray-500 mb-4">
           Deal status for the past 28 days
@@ -95,7 +101,7 @@ const EmployeeCloseGraph = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''}/>
+  tickFormatter={(value) => Number.isInteger(value) ? value : ''} />
             <Tooltip />
             <Legend />
             <Line
@@ -106,8 +112,7 @@ const EmployeeCloseGraph = () => {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-     </div>
+      </div></div>
     </>
   );
 };

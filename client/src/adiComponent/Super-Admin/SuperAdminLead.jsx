@@ -51,7 +51,7 @@ function SuperAdminLead() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads");
       console.log(response.data);
       setLeads(response.data);
     } catch (error) {
@@ -61,7 +61,7 @@ function SuperAdminLead() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee");
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -142,7 +142,7 @@ function SuperAdminLead() {
     if (validateForm()) {
         try {
           await axios.put(
-            `https://crmdemo.vimubds5.a2hosted.com/api/leads/${currentLead.lead_id}`,
+            `https://crm.dentalguru.software/api/leads/${currentLead.lead_id}`,
             currentLead
           );
           fetchLeads(); // Refresh the list
@@ -159,7 +159,7 @@ function SuperAdminLead() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${id}`);
+        await axios.delete(`https://crm.dentalguru.software/api/leads/${id}`);
         fetchLeads(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting lead:", error);
@@ -277,7 +277,7 @@ function SuperAdminLead() {
                 >
                   <option value="">All Lead Sources</option>
                   <option value="Facebook Campaign">Facebook Campaign</option>
-                  <option value="Website"> Website</option>
+                  <option value="One Realty Website">One Realty Website</option>
                   <option value="Trade Shows">Trade Shows</option>
                   <option value="Cold Calling">Cold Calling</option>
                   <option value="Email Campaigns">Email Campaigns</option>
@@ -303,7 +303,7 @@ function SuperAdminLead() {
                 >
                   <option value="">All Status</option>
                   {/* <option value="Facebook Campaign">visited</option>
-                  <option value="Website">pending</option>
+                  <option value="One Realty Website">pending</option>
                   <option value="Trade Shows">confirm</option>
                   <option value="Cold Calling">Cold Calling</option> */}
                   <option default value="pending">Pending</option>
@@ -364,7 +364,7 @@ function SuperAdminLead() {
                     Assigned To
                   </th>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                    Subject
+                    Project
                   </th>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                     Lead Status

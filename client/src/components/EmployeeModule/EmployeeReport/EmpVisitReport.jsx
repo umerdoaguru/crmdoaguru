@@ -15,7 +15,7 @@ const EmpVisitReport = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6; // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+
  
   const [duration, setDuration] = useState("all"); // Default is "all"
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -29,7 +29,9 @@ const EmpVisitReport = () => {
 'visit_date',
 
   ]);
-  
+  const EmpId = useSelector((state) => state.auth.user);
+
+  const token = EmpId?.token;
 
 
   // Fetch leads from the API
@@ -41,7 +43,12 @@ const EmpVisitReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employebyid-visit/${EmpId}`
+        `https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       // Filter out leads where visit is "Pending"
       const nonPendingLeads = response.data.filter(
@@ -133,7 +140,7 @@ const EmpVisitReport = () => {
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Visit Report");
-    XLSX.writeFile(workbook, "VisitReport.xlsx");
+    XLSX.writeFile(workbook, `Visit of ${duration} Report.xlsx`);
   };
 
   // Pagination logic

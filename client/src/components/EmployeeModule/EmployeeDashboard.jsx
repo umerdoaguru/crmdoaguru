@@ -10,7 +10,8 @@ import EmployeeLeadsReport from "./DashboardCompo/EmployeeLeadsReport";
 import EmployeeVisitGraph from "./DashboardCompo/EmployeeVisitGraph";
 import EmployeeCloseGraph from "./DashboardCompo/EmployeeCloseGraph";
 
-function EmployeeDashboard() {
+function 
+EmployeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {

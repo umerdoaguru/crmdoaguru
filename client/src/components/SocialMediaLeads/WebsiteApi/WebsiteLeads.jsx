@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 function WebsiteLeads() {
@@ -23,13 +24,18 @@ function WebsiteLeads() {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(10);
-  const [loadingbutton , setLoadingButton] = useState(false)
-
-
+  const [loading , setLoading] = useState(false)
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   // Fetch leads
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://one-realty.in/api/user-data");
+      const response = await axios.get("https://crm.dentalguru.software/api/user-data-admin",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setWebsiteLeads(response.data);
     } catch (error) {
       console.error("Error fetching website leads:", error);
@@ -39,7 +45,12 @@ function WebsiteLeads() {
   // Fetch employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -49,7 +60,12 @@ function WebsiteLeads() {
   // Fetch lead assignments
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setwebsiteLeadsAssigned(response.data);
     } catch (error) {
       console.error("Error fetching assigned leads:", error);
@@ -97,8 +113,8 @@ function WebsiteLeads() {
     }
   
     try {
-      setLoadingButton(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      setLoading(true)
+      await axios.post("https://crm.dentalguru.software/api/leads", {
         lead_no: selectedLead.leadId,
         assignedTo: currentLead.assignedTo,
         employeeId: currentLead.employeeId,
@@ -135,14 +151,14 @@ function WebsiteLeads() {
 const formattedDate = moment(currentLead.createdTime).format("DD-MM-YYYY"); // Format the date as 'DD-MM-YYYY'
 
 // Generate the WhatsApp link with the formatted date
-const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20One%20Realty%20Website%0A6)%20Address:%20${selectedLead.address}%0A7)%20Subject:%20${selectedLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20One%20Realty%20Website%0A6)%20Address:%20${selectedLead.address}%0A7)%20Project:%20${selectedLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
 // Open WhatsApp link
 window.open(whatsappLink, "_blank");
-setLoadingButton(false)
+setLoading(false)
 
     } catch (error) {
-      setLoadingButton(false)
+      setLoading(false)
       console.error("Error adding lead:", error);
     }
   };
@@ -213,7 +229,7 @@ console.log("Assigned Leads:", websiteleadsAssigned);
                   Phone
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                  Subject
+                  Project
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                  Address
@@ -353,11 +369,11 @@ console.log("Assigned Leads:", websiteleadsAssigned);
                 className="w-full p-2 border rounded"
                 disabled
               >
-                <option value="Website Inquiries">Website</option>
+                <option value="Website Inquiries">One Realty Website</option>
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Subject</label>
+              <label className="block text-gray-700">Project</label>
               <input
                 type="text"
                 name="subject"
@@ -406,9 +422,9 @@ console.log("Assigned Leads:", websiteleadsAssigned);
             <div className="flex justify-end">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-                onClick={saveChanges} disabled = {loadingbutton}
+                onClick={saveChanges} disabled = {loading}
               >
-         {loadingbutton ? 'Save...' : 'Save'}
+                    {loading ? 'Save...' : 'Save'}
               </button>
               <button
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"

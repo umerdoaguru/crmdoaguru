@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import SuperFormInput from './SuperFormInput';
 import SuperUpdateForm from './SuperUpdateForm';
 import SuperFormSelector from './SuperSelectForm';
+import { useSelector } from 'react-redux';
 
 const SuperLeadsTable = () => {
   const [leads, setLeads] = useState([]);
@@ -24,7 +25,7 @@ const SuperLeadsTable = () => {
   // Fetch leads based on selected form ID
   // const fetchLeadsByFormId = async (formId) => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/Leads-data-fetch/${formId}`);
+  //     const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch/${formId}`);
   //     setLeads(response.data);
   //   } catch (err) {
   //     console.error('Error fetching leads:', err);
@@ -42,6 +43,8 @@ const SuperLeadsTable = () => {
     employeephone: "",
     createdTime:"",
   });
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
@@ -50,7 +53,12 @@ const SuperLeadsTable = () => {
 
   const fetchLeadsByFormId = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/Leads-data-fetch/${gotId}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch-super-admin/${gotId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeads(response.data);
       setLoading(false);
     } catch (err) {
@@ -60,7 +68,12 @@ const SuperLeadsTable = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -68,7 +81,12 @@ const SuperLeadsTable = () => {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeadsAssigned(response.data);
       // console.log(leadsAssigned);
     } catch (error) {
@@ -118,7 +136,7 @@ const SuperLeadsTable = () => {
     }
     try {
       setLoadingsave(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      await axios.post("https://crm.dentalguru.software/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,
@@ -154,7 +172,7 @@ const SuperLeadsTable = () => {
 const formattedDate = moment(currentLead.createdTime).format("DD-MM-YYYY"); // Format the date as 'DD-MM-YYYY'
 
 // Generate the WhatsApp link with the formatted date
-const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20Facebook%20Campaign%0A6)%20Address:%20${selectedLead.address}%0A7)%20Subject:%20${formName}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20Facebook%20Campaign%0A6)%20Address:%20${selectedLead.address}%0A7)%20Project:%20${formName}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
 // Open WhatsApp link
 window.open(whatsappLink, "_blank");
@@ -185,7 +203,7 @@ setLoadingsave(false)
   const saveIntoDB = async () => {
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+      const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
         formId: gotId,
       });
       setLoading(true);
@@ -233,7 +251,7 @@ setLoadingsave(false)
   // const saveIntoDB = async () => {
   //   try {
   //     // Fetch leads from Meta API via backend
-  //     const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+  //     const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
   //       formId: gotId,
   //     });
   //     setLoading(true);
@@ -449,7 +467,7 @@ setLoadingsave(false)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Subject</label>
+              <label className="block text-gray-700">Project</label>
               <input
                 type="text"
                 name="subject"

@@ -71,6 +71,7 @@ import QuotationInputForm from "../components/EmployeeModule/QuotationByLeads/Qu
 import ViewAllVisit from "../components/Leads/ViewAllVisit";
 import Final_Quotation_All from "../pages/Quotation/Final_Quotation_All";
 import ViewAllFollowUp from "../components/Leads/ViewAllFollowUp";
+import ViewAllRemark from "../components/Leads/ViewAllRemark";
 
 function EmployeeRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -183,6 +184,10 @@ function EmployeeRoutes() {
           <Route
             path="/view_follow_up/:id"
             element={<ViewAllFollowUp />}
+          />
+          <Route
+            path="/view_remark/:id"
+            element={<ViewAllRemark />}
           />
 
           <Route path="/overview" element={<Overview />} />

@@ -5,6 +5,7 @@ import { styled } from "styled-components";
 import UserLogin from "../../components/UserLogin";
 import { FaClipboardList } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 function Admin_QuotationView() {
   const navigate = useNavigate();
@@ -14,10 +15,17 @@ function Admin_QuotationView() {
   const [totalActualPrice, setTotalActualPrice] = useState(0);
   const [totalOfferPrice, setTotalOfferPrice] = useState(0);
   const [quotationStatus, setQuotationStatus] = useState("");
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   const fetchQuotations = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/quotation-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       if (response.status === 200) {
         setQuotationName(response.data[0].customer_name);
         setQuotations(response.data);
@@ -70,22 +78,20 @@ function Admin_QuotationView() {
             <div className="container border border-black rounded-lg h-auto m-2 p-4">
               <div className="flex flex-col justify-center items-center">
                 <div>
-                  <img src="https://doaguru.com/static/media/doagurulogo-removebg.b0126812bbe704a27f8f.webp" alt="Company logo" />
+                  <img src="https://one-realty.in/static/media/company_logo.b0c6ab3fa89a853264a3.png" alt="Company logo" />
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2 text-black font-bold">
                   <h4 className="underline ">
-                    1815 Wright Town,
-Jabalpur, Madhya pradesh INDIA
-482002
+                    First Floor chamber number 1&2 Dutt Residency,opposite stadium
                   </h4>
                   <h4 className="underline ">
-                    Tel  +917440992424
+                    North civil lines,Jabalpur(M.P.)Tel  +917614924920
                   </h4>
                   <h4 className="underline ">
-                    Email : hrdoaguru@gmail.com  website : www.doaguru.com
+                    Email : hronerealty@gmail.com  website : www.onerealty.in
                   </h4>
                   <h4 className="underline ">
-                    REGISTRATION NO:- 00/01/01/0000/01    RERA ID NO:- P-JBP-24-0000
+                    REGISTRATION NO:- 04/14/01/0060/17    RERA ID NO:- P-JBP-23-4248
                   </h4>
 
                 </div>
@@ -174,10 +180,10 @@ Jabalpur, Madhya pradesh INDIA
               >
                 Review Quotation Data
               </button> */}
-              <button
-                className={`bg-green-700  text-white rounded p-2 mt-1`}
+             <button
+                className={`bg-green-700 ${quotationStatus !== "Approved" ? "opacity-50 cursor-not-allowed" : "hover:bg-green-600"} text-white rounded p-2 mt-1`}
                 onClick={handlePrintPage}
-              
+                disabled={quotationStatus !== "Approved"}
               >
                 Print Page
               </button>

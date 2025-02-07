@@ -48,6 +48,7 @@ import Admin_view_quotations from "../components/Leads/Admin_view_quotations";
 import Admin_QuotationView from "../components/Leads/Admin_QuotationView";
 import Admin_FollowUpView from "../components/Leads/Admin_FollowUpView";
 import AdminProfile from "../components/AdminProfile";
+import Admin_RemarksView from "../components/Leads/Admin_RemarksView";
 
 function AdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -56,7 +57,7 @@ function AdminRoutes() {
       <Routes>
         {/* Admin routes */}
         <Route path="/" element={<Dashboard />} />
-        <Route path="/admincrmdoaguru" element={<Registration />} />
+        <Route path="/admincrmonerealty" element={<Registration />} />
 
         {/* <Route path="/" element={user? <Dashboard/> :<Landingpage/>} /> */}
         {/* <Route path="/admin-login" element={<AdminLogin/>} /> */}
@@ -122,6 +123,10 @@ function AdminRoutes() {
          <Route
           path="/admin_view_follow_up/:id"
           element={<Admin_FollowUpView />}
+        />
+         <Route
+          path="/admin_view_remark/:id"
+          element={<Admin_RemarksView />}
         />
         <Route
           path="/admin_view_quotations/:id"

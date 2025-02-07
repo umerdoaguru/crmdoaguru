@@ -25,7 +25,7 @@ function AdminProfile() {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/getAdminById/${adminId}`
+          `https://crm.dentalguru.software/api/getAdminById/${adminId}`
         ); // Fetch employee data
         setUser(response.data.admin); // Set employee data to state
         console.log(response.data); // Debug: log employee data

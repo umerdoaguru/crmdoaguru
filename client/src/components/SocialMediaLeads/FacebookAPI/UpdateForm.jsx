@@ -26,7 +26,7 @@ const UpdateForm = ({setShowUpdateForm}) => {
   const fetchFormData = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/forms`
+        `https://crm.dentalguru.software/api/forms`
       );
       setForm(response.data.reverse());
       console.log(response);
@@ -43,7 +43,7 @@ const UpdateForm = ({setShowUpdateForm}) => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/deleteform/${form.id}`
+          `https://crm.dentalguru.software/api/deleteform/${form.id}`
         );
         if (response.status === 200) {
           console.log("form deleted successfully");
@@ -81,7 +81,7 @@ const UpdateForm = ({setShowUpdateForm}) => {
   // Function to send the PUT request to update the Form data
   const updateFrom = async () => {
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/updateform`, modalData);
+      const response = await axios.put(`https://crm.dentalguru.software/api/updateform`, modalData);
       if (response.status === 200) {
         cogoToast.success("Form updated successfully!");
         setRender(!render); // Refresh the list after updating

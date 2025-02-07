@@ -50,7 +50,7 @@ function AdminInvoiceView() {
     const fetchInvoiceAddress = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/invoice-address/${id}`
+          `https://crm.dentalguru.software/api/invoice-address/${id}`
         );
         console.log(response.data);
         if (response.status === 200) {
@@ -80,7 +80,7 @@ function AdminInvoiceView() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice/${id}`
+        `https://crm.dentalguru.software/api/invoice/${id}`
       );
       if (response.status === 200) {
         setInvoiceName(response.data[0].invoice_name);
@@ -317,7 +317,7 @@ function AdminInvoiceView() {
     try {
       // Make a POST request to fetch data for the selected company
       const response = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/company-name-data",
+        "https://crm.dentalguru.software/api/company-name-data",
         {
           company_name: companyType,
         }
@@ -384,7 +384,7 @@ function AdminInvoiceView() {
   const fetchNotes = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-get-notes/${id}`
+        `https://crm.dentalguru.software/api/invoice-get-notes/${id}`
       );
 
       if (response.status === 200) {

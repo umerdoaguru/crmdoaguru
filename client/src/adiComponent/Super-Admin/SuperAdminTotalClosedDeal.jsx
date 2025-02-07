@@ -7,6 +7,7 @@ import SuperAdminSider from "./SuperAdminSider";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const SuperAdminTotalClosedDeal = () => {
   const [leads, setLeads] = useState([]);
@@ -17,6 +18,8 @@ const SuperAdminTotalClosedDeal = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
   const navigate = useNavigate();
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
   useEffect(() => {
     fetchLeads();
@@ -24,8 +27,13 @@ const SuperAdminTotalClosedDeal = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads`);
-      const nonPendingLeads = response.data.filter((lead) => lead.deal_status !== "pending");
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads-super-admin`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
+      const nonPendingLeads = response.data.filter((lead) => lead.deal_status == "close");
       setLeads(nonPendingLeads);
       setFilteredLeads(nonPendingLeads);
     } catch (error) {
@@ -36,15 +44,16 @@ const SuperAdminTotalClosedDeal = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
-    if (searchTerm) {
-      const trimmedSearchTerm = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter((lead) =>
-        ["name", "lead_no", "leadSource", "phone"].some((key) =>
-          lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
-        )
-      );
-    }
+ // Filter by search term
+ if (searchTerm) {
+  const trimmedSearchTerm = searchTerm.toLowerCase().trim();
+  filtered = filtered.filter((lead) =>
+    ["name", "leadSource", "phone","assignedTo"].some((key) =>
+      lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
+    )
+  );
+}
+
 
     // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
@@ -97,7 +106,7 @@ const SuperAdminTotalClosedDeal = () => {
                
                <input
                  type="text"
-                 placeholder=" Name,Lead No,Lead Source,Phone No"
+                  placeholder=" Name,Lead Source,Assigned To,Phone No"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                  className="border rounded-2xl p-2 w-25"
@@ -107,25 +116,25 @@ const SuperAdminTotalClosedDeal = () => {
             className="border rounded-2xl p-2 w-1/4"
           
           >
-            <option value={7}>7 Pages</option>
-            <option value={10}>10 Pages</option>
-            <option value={20}>20 Pages</option>
-            <option value={50}>50 Pages</option>
-            <option value="All">All Pages</option>
+                   <option value={7}>Number of rows: 7</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
           </select>
              </div>
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300">Lead Id</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Lead Name</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">Subject</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Visit</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Follow Up Status</th>
+              
             
                   <th className="px-6 py-3 border-b-2 border-gray-300">Deal Status</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">Deal Close Date</th>
@@ -140,16 +149,13 @@ const SuperAdminTotalClosedDeal = () => {
 
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.lead_no}
+                      {lead.lead_id}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.assignedTo}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.subject}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}
@@ -164,6 +170,7 @@ const SuperAdminTotalClosedDeal = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.follow_up_status}
                     </td>
+                   
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.deal_status}
                     </td>

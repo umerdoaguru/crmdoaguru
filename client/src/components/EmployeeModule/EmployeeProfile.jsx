@@ -20,12 +20,19 @@ const mockEmployeeData = {
 
 function EmployeeProfile() {
   const [user, setUser] = useState([]); // Initialize state for employee data
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+
+  const token = EmpId?.token;
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employeeProfile/${EmpId}`
+          `https://crm.dentalguru.software/api/employeeProfile/${EmpId.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         ); // Fetch employee data
         setUser(response.data[0]); // Set employee data to state
         console.log(response.data); // Debug: log employee data

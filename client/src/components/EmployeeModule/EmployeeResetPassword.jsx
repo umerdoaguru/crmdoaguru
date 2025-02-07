@@ -21,7 +21,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/sendOtp-employee",
+        "https://crm.dentalguru.software/api/sendOtp-employee",
         {
           email,
         }
@@ -44,7 +44,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/verifyOtp-employee",
+        "https://crm.dentalguru.software/api/verifyOtp-employee",
         {
           email,
           otp,
@@ -67,7 +67,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "https://crmdemo.vimubds5.a2hosted.com/api/resetPassword-employee",
+        "https://crm.dentalguru.software/api/resetPassword-employee",
         {
           email,
           password: newPassword,

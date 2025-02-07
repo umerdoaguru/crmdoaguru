@@ -30,7 +30,7 @@ const CreateServicelist = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/create-servicelist`,
+        `https://crm.dentalguru.software/api/create-servicelist`,
         {
           services: services.filter(
             (service) => service.service_name.trim() !== ""

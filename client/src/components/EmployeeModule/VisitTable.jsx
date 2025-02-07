@@ -18,7 +18,8 @@ const VisitTable = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0); // Current page for pagination
   const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
   const navigate = useNavigate();
   useEffect(() => {
     fetchLeads();
@@ -26,7 +27,12 @@ const VisitTable = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employebyid-visit/${EmpId}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       const nonPendingLeads = response.data.filter((lead) => lead.visit !== "pending");
 
       setLeads(nonPendingLeads);
@@ -106,11 +112,11 @@ const VisitTable = () => {
             className="border rounded-2xl p-2 w-1/4"
           
           >
-            <option value={7}>7 Pages</option>
-            <option value={10}>10 Pages</option>
-            <option value={20}>20 Pages</option>
-            <option value={50}>50 Pages</option>
-            <option value="All">All Pages</option>
+             <option value={7}>Number of rows: 7</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
           </select>
 
              </div>

@@ -5,23 +5,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import img from "../../images/lead_profile.png";
 import MainHeader from "../../components/MainHeader";
 import SuperAdminSider from "./SuperAdminSider";
+import Super_view_remarks from "./Super_view_remaks";
+import Super_view_followup from "./Super_view_followup";
+import Super_view_visit from "./Super_view_visit";
+import { useSelector } from "react-redux";
 
-function Super_Single_Lead_Profile() {
-  const { id } = useParams();
+function Super_Single_Lead_Profile({id,closeModalLead }) {
+
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [visit, setVisit] = useState([]);
-  const [quotationCreated, setQuotationCreated] = useState(false);
+ 
   const [visitCreated, setVisitCreated] = useState(false);
   const [followCreated, setFollowCreated] = useState(false);
+  const [remarksCreated, setRemarksCreated] = useState(false);
+  const [isModalOpenRemarks, setIsModalOpenRemarks] = useState(false);
+  const [isModalOpenFollowUp, setIsModalOpenFollowUp] = useState(false);
+  const [isModalOpenVisit, setIsModalOpenVisit] = useState(false);
 
-
-
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
    
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${id}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads-super-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       console.log(response.data);
       setLeads(response.data);
 
@@ -30,17 +43,8 @@ function Super_Single_Lead_Profile() {
         console.log("Lead Quotation Status (raw):", lead.quotation);
       });
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
-      const hasCreatedQuotation = response.data.some(
-        (lead) =>
-          lead.quotation && lead.quotation.trim().toLowerCase() === "created"
-      );
+     
 
-      console.log(
-        "Has created quotation (normalized check)?",
-        hasCreatedQuotation
-      ); // Debugging
-      setQuotationCreated(hasCreatedQuotation);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -49,7 +53,12 @@ function Super_Single_Lead_Profile() {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up/${id}`
+        `https://crm.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
     
@@ -57,6 +66,23 @@ function Super_Single_Lead_Profile() {
       setFollowCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
+    }
+  };
+  const fetchRemark = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm.dentalguru.software/api/remarks-super-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
+      );
+      console.log(response.data);
+      setRemarksCreated(response.data[0]);
+     
+    } catch (error) {
+      console.error("Error fetching remarks:", error);
     }
   };
 
@@ -69,7 +95,12 @@ function Super_Single_Lead_Profile() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`
+        `https://crm.dentalguru.software/api/employe-visit-super-admin/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
       setVisit(response.data);
@@ -97,30 +128,56 @@ function Super_Single_Lead_Profile() {
   const handleViewVisit = () => {
     navigate(`/super_view_visit/${leads[0].lead_id}`);
   };
-  const handleViewFollowUp = () => {
-    navigate(`/super_view_follow_up/${leads[0].lead_id}`);
+
+
+    const handleClickRemark = () => {
+    
+      setIsModalOpenRemarks(true);
+    };
+    const handleClickFollowUp = () => {
+    
+      setIsModalOpenFollowUp(true);
+    };
+    const handleClickVisit = () => {
+    
+      setIsModalOpenVisit(true);
+    };
+    
+    // Function to close the modal
+    const closeModalRemark = () => {
+      setIsModalOpenRemarks(false);
+   
+  };
+    const closeModalFollowUp = () => {
+      setIsModalOpenFollowUp(false);
+      
+  };
+    const closeModalVisit = () => {
+      setIsModalOpenVisit(false);
+
   };
 
   useEffect(() => {
     fetchLeads();
 fetchFollowUp();
     fetchVisit();
+    fetchRemark();
   }, [id]);
 
   return (
     <>
-      <MainHeader />
-      <SuperAdminSider />
-      <div className="container mt-5 px-2 mx-auto p-4">
-        <button
-          onClick={handleBackClick}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+      
+      <div className="relative  container px-2 mx-auto p-4">
+      <button
+          onClick={closeModalLead}
+          className="absolute top-2 left-2 text-[black] hover:text-gray-700 text-[3rem]"
+          title="Close"
         >
-          Go Back
+          ×
         </button>
         <h1 className="text-2xl text-center mt-[2rem]">Leads Profile</h1>
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
-        <div className="flex flex-wrap mb-4 2xl:ml-44 mt-2">
+        <div className="flex flex-wrap mb-4  mt-2">
           <div className="w-full lg:w-1/3">
             <img src={img} alt="doctor-profile" className=" rounded-lg" />
           </div>
@@ -162,7 +219,7 @@ fetchFollowUp();
                   </div>
                 </div>
                 <div>
-                  <label className="text-info">Subject</label>
+                  <label className="text-info">Project</label>
                   <div className="p-2 bg-gray-100 rounded">
                     <p className="m-0">{lead.subject}</p>
                   </div>
@@ -175,7 +232,7 @@ fetchFollowUp();
                 </div>
 
                 <div>
-                  <label className="text-info">Created Date</label>
+                  <label className="text-info">Assigned Date</label>
                   <div className="p-2 bg-gray-100 rounded">
                     <p className="m-0">
                               {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
@@ -187,27 +244,15 @@ fetchFollowUp();
           ))}
         </div>
 
-        <div className="2xl:ml-44 mt-2">
+        <div className="mt-2">
         <div className="">
               {/* Conditionally render the View Quotation button */}
               <div className="flex">
-                {quotationCreated ? (
-                  <button
-                    onClick={() => handleViewQuotation(leads[0])}
-                    className="bg-blue-500 text-white px-4 py-2 mx-2 rounded"
-                  >
-                    View Quotation
-                  </button>
-                ) : (
-                  <p className="text-white bg-red-400 text-center px-4 py-2 mx-2 rounded">
-                    Quotation not yet created
-                  </p>
-                )}
-
+               
                 {/* Conditionally render the View Quotation button */}
                 {visitCreated ? (
                   <button
-                    onClick={handleViewVisit}
+                    onClick={handleClickVisit}
                     className="bg-green-500 text-white px-4 py-2 mx-1 rounded"
                   >
                     View Visit
@@ -219,7 +264,7 @@ fetchFollowUp();
                 )}
                 {followCreated ? (
   <button
-    onClick={handleViewFollowUp}
+    onClick={handleClickFollowUp}
     className="bg-yellow-500 text-white px-4 py-2 mx-1 rounded"
   >
     View Follow Up
@@ -229,187 +274,145 @@ fetchFollowUp();
     Follow Up not yet created
   </p>
 )}
+{remarksCreated ? (
+      <button
+        // onClick={handleViewRemark}
+        onClick={handleClickRemark}
+        className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Remark
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
+        Remark not yet created
+      </p>
+    )}
               </div>
             </div>
         </div>
 
    
-        <div className="overflow-x-auto mt-5 2xl:ml-44">
-            <table className="min-w-full whitespace-nowrap bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Assigned To
-                  </th>
-                 
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Visit
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Quotation
-                  </th>
-                
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Status
-                  </th>
-                
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Deal Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Deal Close Date
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Booking Amount
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                   Payment Mode 
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                   Registry
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Reason
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Follow Up Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Status
-                  </th>
-                
-                </tr>
-              </thead>
-              <tbody>
-                {leads.map((lead, index) => (
-                  <tr
-                    key={lead.id}
-                    className={index % 2 === 0 ? "bg-gray-100" : ""}
-                  >
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.name}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
-                    </td>
+        <div className="overflow-x-auto mt-5">
+        <table className="min-w-full whitespace-nowrap bg-white border">
+  <thead>
+    <tr>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Remark Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Answer Remark</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Meeting Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned By</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Address</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Booking Amount</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Deal Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Employee ID</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Follow-Up Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Payment Mode</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Quotation</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Quotation Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Reason</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Registry</th>
+    
+      <th className="px-6 py-3 border-b-2 border-gray-300">Project</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Visit</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Close Date</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned Date</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Actual Date</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+  {leads.map((lead, index) => (
+  <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.lead_no}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.name}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.phone}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.leadSource}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.remark_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.answer_remark}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.meeting_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedBy}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.lead_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.address}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.booking_amount}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.deal_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.employeeId}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.follow_up_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.payment_mode}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.quotation}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.quotation_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.reason}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.registry}</td>
 
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[black]">
-                      {lead.visit}
-                    </td>
-                   
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.quotation}
-                    </td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.subject}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.visit}</td>
+    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
+      {lead.d_closeDate === "pending"
+        ? "pending"
+        : moment(lead.d_closeDate).format("DD MMM YYYY").toUpperCase()}
+    </td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+      {lead.createdTime
+        ? moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()
+        : "N/A"}
+    </td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+      {lead.actual_date
+        ? moment(lead.actual_date).format("DD MMM YYYY").toUpperCase()
+        : "N/A"}
+    </td>
+  
+  </tr>
+))}
 
-                  
-
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[black]">
-                      {lead.status}
-                    </td>
-                  
-
-                    {lead.deal_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-
-                    {lead.deal_status === "close" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-                    {lead.deal_status === "cancelled" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[blue]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-                    {lead.deal_status === "in-progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[blue]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.d_closeDate}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.booking_amount}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.payment_mode}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.registry}
-                    </td>
-
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                      {lead.reason}
-                    </td>
-
-                    {lead.lead_working_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-                    {lead.lead_working_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[yellow]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-                    {lead.lead_working_status === "completed" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-
-                    {lead.follow_up_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-
-                    {lead.follow_up_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-amber-600">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-                    {lead.follow_up_status === "done" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-                    {lead.lead_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-
-                    {lead.lead_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[orange]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-                    {lead.lead_status === "completed" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-                   
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+  </tbody>
+</table>
           </div>
+      
+          {isModalOpenRemarks && (
+       <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
+              <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+     
+              <Super_view_remarks 
+        id={leads[0].lead_id}
+        closeModalRemark={closeModalRemark} 
+     
+      />
+            
+    </div>
+  </div>
+)}
+          {isModalOpenFollowUp && (
+       <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
+              <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+     
+              <Super_view_followup
+        id={leads[0].lead_id}
+        closeModalFollowUp={closeModalFollowUp} 
+     
+      />
+            
+    </div>
+  </div>
+)}
+          {isModalOpenVisit && (
+       <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
+              <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+     
+              <Super_view_visit
+        id={leads[0].lead_id}
+        closeModalVisit ={closeModalVisit} 
+     
+      />
+            
+    </div>
+  </div>
+)}
       </div>
     </>
   );

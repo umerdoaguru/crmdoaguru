@@ -24,12 +24,19 @@ function CreateCompanyProfile() {
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const navigate = useNavigate()
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   useEffect(() => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+          `https://crm.dentalguru.software/api/quotation-data-admin`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setQuotations(response.data);
         console.log(quotations);
@@ -76,7 +83,7 @@ function CreateCompanyProfile() {
 
     try {
       // API call to update status in the backend
-      await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/update-quotation-status`, {
+      await axios.post(`https://crm.dentalguru.software/api/update-quotation-status`, {
         id: id, // Send the quotation ID
         status: newStatus, // Send the updated status
       });
@@ -126,7 +133,7 @@ function CreateCompanyProfile() {
               placeholder="Filter by Quotation Name"
               value={filterText}
               onChange={handleFilterChange}
-              className="form-input border-gray-300 rounded-md p-2 border shadow-sm w-full max-w-md"
+              className="form-input border-gray-300 rounded-md shadow-sm w-full max-w-md"
             />
           </div>
 
@@ -145,6 +152,9 @@ function CreateCompanyProfile() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Quotation Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Quotation Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created Date
@@ -170,6 +180,9 @@ function CreateCompanyProfile() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {quotation.customer_name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {quotation.status}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {moment(quotation.created_date).format("DD MMM YYYY").toUpperCase()}

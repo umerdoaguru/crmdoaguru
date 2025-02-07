@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import moment from "moment"; // Import moment for date formatting
 import ReactPaginate from 'react-paginate'; // Make sure to import ReactPaginate
 import styled from 'styled-components'; // Import styled-components for styling
+import { useSelector } from "react-redux";
 
 const LeadsReport = () => {
   const [leads, setLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(7);
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+        const response = await fetch("https://crm.dentalguru.software/api/leads",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         const data = await response.json();
         console.log("Fetched leads data:", data); // Debugging line
 
@@ -46,7 +53,7 @@ const LeadsReport = () => {
     <>
     
     <div className="p-4 mt-6 bg-white rounded-lg shadow-lg mx-7 mb-2 ">
-      <h3 className="mb-4 text-lg font-semibold">Today's Assigned Leads</h3>
+    <h3 className="mb-4 text-lg font-semibold">Today's Assigned Leads</h3>
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full bg-white border">
           <thead>
@@ -57,8 +64,8 @@ const LeadsReport = () => {
               <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Lead Status</th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">Assigned Date</th>
             </tr>
           </thead>
           <tbody>
@@ -71,19 +78,19 @@ const LeadsReport = () => {
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.phone}</td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.leadSource}</td>
-                  <td className="px-6 py-4 bg-primary-100 text-primary-800 text-gray-700">
-                    <span className="bg-blue-200 text-gray-800 font-medium rounded px-2">{moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}</span>
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.subject}</td>
+              
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    <span className="px-2 font-semibold leading-tight text-green-700 bg-green-100 rounded">{lead.lead_status}</span>
+                 {lead.lead_status}
+                  </td>
+                  <td className="px-6 py-4 bg-primary-100 text-primary-800 text-gray-700">
+                   {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
                 
-                <td colSpan="11" className="px-6 py-4 text-center  text-gray-500">No Data Available</td>
+                <td colSpan="15" className="px-6 py-4 text-center  text-gray-500">No Data Available</td>
               </tr>
             )}
           </tbody>

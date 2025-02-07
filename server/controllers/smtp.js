@@ -26,7 +26,7 @@
   //     const mailOptions = {
   //       from: 'info@one-realty.in',
   //       to: 'umerqureshi786786@gmail.com',
-  //       subject: 'Website Query/Contact Detailed From one-realty.in',
+  //       subject: 'One Realty Website Query/Contact Detailed From one-realty.in',
   //       text: `Name: ${name}\nEmail: ${email}\nMobile No.: ${mobile_no}\nSubject: ${subject}\nMessage: ${message}`,
   //     };
   

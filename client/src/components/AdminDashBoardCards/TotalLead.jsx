@@ -16,14 +16,20 @@ const AdminTotalLead = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
   const navigate = useNavigate();
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   useEffect(() => {
     fetchLeads();
   }, []);
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       console.log(response);
       setLeads(response.data);
     } catch (error) {
@@ -33,15 +39,16 @@ const AdminTotalLead = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
-    if (searchTerm) {
-      const trimmedSearchTerm = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter((lead) =>
-        ["name", "lead_no", "leadSource", "phone"].some((key) =>
-          lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
-        )
-      );
-    }
+ // Filter by search term
+ if (searchTerm) {
+  const trimmedSearchTerm = searchTerm.toLowerCase().trim();
+  filtered = filtered.filter((lead) =>
+    ["name", "leadSource", "phone","assignedTo"].some((key) =>
+      lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
+    )
+  );
+}
+
 
     // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
@@ -90,7 +97,7 @@ const AdminTotalLead = () => {
                
                <input
                  type="text"
-                 placeholder=" Name,Lead No,Lead Source,Phone No"
+                  placeholder=" Name,Lead Source,Assigned To,Phone No"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                  className="border rounded-2xl p-2 w-25"
@@ -100,11 +107,11 @@ const AdminTotalLead = () => {
             className="border rounded-2xl p-2 w-1/4"
           
           >
-            <option value={7}>7 Pages</option>
-            <option value={10}>10 Pages</option>
-            <option value={20}>20 Pages</option>
-            <option value={50}>50 Pages</option>
-            <option value="All">All Pages</option>
+                   <option value={7}>Number of rows: 7</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
           </select>
              </div>
         <table className="container bg-white border">
@@ -114,7 +121,7 @@ const AdminTotalLead = () => {
                 S.no
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                Lead Number
+                Lead Id
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                 Name
@@ -128,14 +135,12 @@ const AdminTotalLead = () => {
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                 Assigned To
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                Subject
-              </th>
+      
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                 Lead Status
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                Date
+                Assigned Date
               </th>
             </tr>
           </thead>
@@ -149,11 +154,11 @@ const AdminTotalLead = () => {
                 {leadsPerPage === Infinity ? index + 1 : index + 1 + currentPage * leadsPerPage}
 
                 </td>
-                <Link to={`/lead-single-data/${lead.lead_id}`}>
-                  <td className="px-6 py-4 border-b border-gray-200 underline text-[blue]">
-                    {lead.lead_no}
+               
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {lead.lead_id}
                   </td>
-                </Link>
+         
                 <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                   {lead.name}
                 </td>
@@ -166,9 +171,7 @@ const AdminTotalLead = () => {
                 <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                   {lead.assignedTo}
                 </td>
-                <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                  {lead.subject}
-                </td>
+                
                 <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                   {lead.lead_status}
                 </td>

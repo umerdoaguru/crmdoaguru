@@ -13,6 +13,9 @@ import LeadReport from "../../components/AdminReport/LeadReport";
 import VisitReport from "../../components/AdminReport/VisitReport";
 import ClosedDealReport from "../../components/AdminReport/ClosedDealReport";
 import { useSelector } from "react-redux";
+import SuperLeadReport from "./SuperAdminReport/SuperLeadReport";
+import SuperVisitReport from "./SuperAdminReport/SuperVisitReport";
+import SuperClosedDealReport from "./SuperAdminReport/SuperClosedDealReport";
 const d_fileds = {
   // quotation: {
   //   heading: ["Id", "Quotation Name", "Employee Name", "Date"],
@@ -156,7 +159,7 @@ const SuperReports = () =>
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+        const response = await axios.get("https://crm.dentalguru.software/api/leads");
         setLeads(response.data);
       } catch (error) {
         console.error("Error fetching leads:", error);
@@ -165,7 +168,7 @@ const SuperReports = () =>
   
     const fetchEmployee = async () => {
       try {
-        const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`);
+        const response = await axios.get(`https://crm.dentalguru.software/api/employee`);
         setEmployee(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
@@ -175,7 +178,7 @@ const SuperReports = () =>
     const fetchQuotation = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+          `https://crm.dentalguru.software/api/quotation-data`
         );
         setQuotation(response.data);
       } catch (error) {
@@ -186,7 +189,7 @@ const SuperReports = () =>
     const fetchInvoice = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`
+          `https://crm.dentalguru.software/api/invoice-data`
         );
         setInvoice(response.data);
       } catch (error) {
@@ -196,7 +199,7 @@ const SuperReports = () =>
     const fetchVisit = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit`
+          `https://crm.dentalguru.software/api/employe-all-visit`
         );
         console.log(response.data);
         setVisit(response.data);
@@ -342,10 +345,10 @@ const SuperReports = () =>
   
           {/* Conditionally render the selected component */}
           <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
-            {selectedComponent === "LeadData" && <LeadReport/> }
+            {selectedComponent === "LeadData" && <SuperLeadReport/> }
           
-            {selectedComponent === "VisitData" && <VisitReport/> }
-            {selectedComponent === "ClosedData" && <ClosedDealReport/> }
+            {selectedComponent === "VisitData" && <SuperVisitReport/> }
+            {selectedComponent === "ClosedData" && <SuperClosedDealReport/> }
           </div>
         </div>
       </>

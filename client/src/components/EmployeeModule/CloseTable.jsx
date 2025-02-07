@@ -16,7 +16,8 @@ const CloseTable = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0); // Current page state
   const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
   const navigate = useNavigate();
 
   // Fetch leads from the API
@@ -27,11 +28,16 @@ const CloseTable = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`
+        `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       // Filter out leads where deal_status is not "pending"
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status !== "pending"
+        (lead) => lead.deal_status == "close"
       );
 
       setLeads(nonPendingLeads);
@@ -46,14 +52,16 @@ const CloseTable = () => {
     let filtered = leads;
 
     // Filter by search term
-    if (searchTerm) {
-      const trimmedSearchTerm = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter((lead) =>
-        ["name", "lead_no", "leadSource", "phone"].some((key) =>
-          lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
-        )
-      );
-    }
+ // Filter by search term
+ if (searchTerm) {
+  const trimmedSearchTerm = searchTerm.toLowerCase().trim();
+  filtered = filtered.filter((lead) =>
+    ["name", "leadSource", "phone","assignedTo"].some((key) =>
+      lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
+    )
+  );
+}
+
 
     // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
@@ -104,7 +112,7 @@ const CloseTable = () => {
                
                <input
                  type="text"
-                 placeholder=" Name,Lead No,Lead Source,Phone No"
+                  placeholder=" Name,Lead Source,Assigned To,Phone No"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                  className="border rounded-2xl p-2 w-25"
@@ -115,11 +123,11 @@ const CloseTable = () => {
             className="border rounded-2xl p-2 w-1/4"
           
           >
-            <option value={7}>7 Pages</option>
-            <option value={10}>10 Pages</option>
-            <option value={20}>20 Pages</option>
-            <option value={50}>50 Pages</option>
-            <option value="All">All Pages</option>
+            <option value={7}>Number of rows: 7</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
           </select>
              </div>
             <table className="min-w-full bg-white border">
@@ -127,7 +135,7 @@ const CloseTable = () => {
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Number
+                    Lead Id
                   </th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Assigned To
@@ -135,9 +143,7 @@ const CloseTable = () => {
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Lead Name
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Subject
-                  </th>
+              
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Phone
                   </th>
@@ -174,7 +180,7 @@ const CloseTable = () => {
                         {/* Adjusted for pagination */}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.lead_no}
+                        {lead.lead_id}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.assignedTo}
@@ -182,9 +188,7 @@ const CloseTable = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.subject}
-                      </td>
+                  
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.phone}
                       </td>
@@ -194,9 +198,7 @@ const CloseTable = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.visit}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.visit_date}
-                      </td>
+                      
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.follow_up_status}
                       </td>

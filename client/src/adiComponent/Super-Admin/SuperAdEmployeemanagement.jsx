@@ -9,6 +9,7 @@ import SuperAdminSider from "./SuperAdminSider";
 import MainHeader from "../../components/MainHeader";
 import cogoToast from "cogo-toast"; // Import CogoToast
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 const SuperAdEmployeemanagement = () => {
   const [employees, setEmployees] = useState([]);
@@ -26,6 +27,8 @@ const SuperAdEmployeemanagement = () => {
 
  const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7; 
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
   useEffect(() => {
     fetchEmployees();
@@ -34,7 +37,12 @@ const SuperAdEmployeemanagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees"
+        "https://crm.dentalguru.software/api/getAllEmployees-super-admin",
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }}
       );
       const { employees } = response.data;
       console.log(employees);
@@ -96,7 +104,7 @@ const SuperAdEmployeemanagement = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/checkEmail", {
+      const response = await axios.get("https://crm.dentalguru.software/api/checkEmail", {
         params: { email },
       });
       return response.data.exists;
@@ -115,13 +123,13 @@ const SuperAdEmployeemanagement = () => {
         // Update existing employee
         const employeeToUpdate = employees[editingIndex];
         response = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateEmployee/${employeeToUpdate.employeeId}`,
+          `https://crm.dentalguru.software/api/updateEmployee/${employeeToUpdate.employeeId}`,
           newEmployee
         );
       } else {
         // Add new employee
         response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/addEmployee",
+          "https://crm.dentalguru.software/api/addEmployee",
           newEmployee
         );
       }
@@ -168,7 +176,7 @@ const SuperAdEmployeemanagement = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/deleteEmployee/${employeeId}`
+          `https://crm.dentalguru.software/api/deleteEmployee/${employeeId}`
         );
         fetchEmployees(); // Fetch employees to update the list
       } catch (error) {

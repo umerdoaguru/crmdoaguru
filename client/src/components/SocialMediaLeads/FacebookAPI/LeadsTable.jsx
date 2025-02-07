@@ -7,6 +7,7 @@ import FormInput from './FormInput';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
 import UpdateForm from './UpdateForm';
+import { useSelector } from 'react-redux';
 
 const LeadsTable = () => {
   const [leads, setLeads] = useState([]);
@@ -20,13 +21,12 @@ const LeadsTable = () => {
   
   const [leadsAssigned, setLeadsAssigned] = useState([]);
   const [refreshLeads, setRefreshLeads] = useState(false);  // State to trigger refresh
-  const [loadingbutton , setLoadingButton] = useState(false)
 
 
   // Fetch leads based on selected form ID
   // const fetchLeadsByFormId = async (formId) => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/Leads-data-fetch/${formId}`);
+  //     const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch/${formId}`);
   //     setLeads(response.data);
   //   } catch (err) {
   //     console.error('Error fetching leads:', err);
@@ -37,7 +37,6 @@ const LeadsTable = () => {
   const [selectedLead, setSelectedLead] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [formName, setFormName] = useState([]);
-  
 
   const [currentLead, setCurrentLead] = useState({
     assignedTo: "",
@@ -49,13 +48,20 @@ const LeadsTable = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(10);
-
-  
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   const fetchLeadsByFormId = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/Leads-data-fetch/${gotId}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch-admin/${gotId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeads(response.data);
+      console.log(response.data);
+      
       setLoading(false);
     } catch (err) {
       console.error('Error fetching leads:', err);
@@ -64,7 +70,12 @@ const LeadsTable = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -72,7 +83,12 @@ const LeadsTable = () => {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeadsAssigned(response.data);
       // console.log(leadsAssigned);
     } catch (error) {
@@ -121,8 +137,8 @@ const LeadsTable = () => {
       return; // Stop further execution if the field is empty
     }
     try {
-      setLoadingButton(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      setLoadingsave(true)
+      await axios.post("https://crm.dentalguru.software/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,
@@ -158,16 +174,15 @@ const LeadsTable = () => {
 const formattedDate = moment(currentLead.createdTime).format("DD-MM-YYYY"); // Format the date as 'DD-MM-YYYY'
 
 // Generate the WhatsApp link with the formatted date
-const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20Facebook%20Campaign%0A6)%20Address:%20${selectedLead.address}%0A7)%20Subject:%20${formName}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20Facebook%20Campaign%0A6)%20Address:%20${selectedLead.address}%0A7)%20Project:%20${formName}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
 // Open WhatsApp link
 window.open(whatsappLink, "_blank");
 
+setLoadingsave(false)
 
-setLoadingButton(false)
     } catch (error) {
-setLoadingButton(false)
-
+      setLoadingsave(false)
       console.error("Error adding lead:", error);
     }
   };
@@ -190,7 +205,7 @@ setLoadingButton(false)
   const saveIntoDB = async () => {
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+      const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
         formId: gotId,
       });
       setLoading(true);
@@ -238,7 +253,7 @@ setLoadingButton(false)
   // const saveIntoDB = async () => {
   //   try {
   //     // Fetch leads from Meta API via backend
-  //     const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+  //     const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
   //       formId: gotId,
   //     });
   //     setLoading(true);
@@ -454,7 +469,7 @@ setLoadingButton(false)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Subject</label>
+              <label className="block text-gray-700">Project</label>
               <input
                 type="text"
                 name="subject"
@@ -502,9 +517,9 @@ setLoadingButton(false)
             <div className="flex justify-end">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-                onClick={saveChanges} disabled = {loadingbutton}
+                onClick={saveChanges} disabled = {loadingsave}
               >
-                 {loadingbutton ? 'Save...' : 'Save'}
+                 {loadingsave ? 'Save...' : 'Save'}
               </button>
               <button
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"

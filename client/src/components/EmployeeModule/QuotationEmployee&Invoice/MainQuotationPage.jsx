@@ -20,7 +20,9 @@ const MainQuoatationPage = () => {
   const [render, setRender] = useState(false);
   const { id } = useParams();
 
-  
+  const EmpId = useSelector((state) => state.auth.user);
+
+  const token = EmpId?.token;
 
   useEffect(() => {
     fetchQuotations();
@@ -29,7 +31,12 @@ const MainQuoatationPage = () => {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+        `https://crm.dentalguru.software/api/quotation-data`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setQuotations(response.data);
       console.log(response.data);
@@ -48,7 +55,7 @@ const MainQuoatationPage = () => {
   //   if (isConfirmed) {
   //     try {
   //       const response = await axios.delete(
-  //         `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`
+  //         `https://crm.dentalguru.software/api/quotation/${id}`
   //       );
   //       if (response.status === 200) {
   //         console.log("Quotation deleted successfully");
@@ -69,7 +76,7 @@ const MainQuoatationPage = () => {
       try {
         // Delete the quotation
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${quotation.id}`
+          `https://crm.dentalguru.software/api/quotation/${quotation.id}`
         );
         
         if (response.status === 200) {
@@ -78,7 +85,7 @@ const MainQuoatationPage = () => {
           // After deletion, update the leads table status
           try {
             const updateResponse = await axios.put(
-              `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyQuotationStatus/${quotation.lead_id}`,
+              `https://crm.dentalguru.software/api/updateOnlyQuotationStatus/${quotation.lead_id}`,
               { quotation: "not created" }
             );
   
@@ -105,7 +112,7 @@ const MainQuoatationPage = () => {
   const handleCopyQuotation = async (quotationId) => {
     try {
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/copy-quotation/${quotationId}`
+        `https://crm.dentalguru.software/api/copy-quotation/${quotationId}`
       );
       setRender(!render);
     } catch (error) {

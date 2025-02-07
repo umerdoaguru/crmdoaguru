@@ -3,7 +3,7 @@ import LeadData from "../components/DataExport/LeadData";
 import QuotationData from "../components/DataExport/QuotationData";
 import InvoiceData from "../components/DataExport/InvoiceData"; // Add your invoice component here if it exists
 import Employees from "../components/DataExport/Employees";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 // import MainHeader from '../components/MainHeader';
 // import Sider from '../components/Sider';
@@ -11,7 +11,9 @@ import { SiMoneygram } from "react-icons/si";
 import { MdOutlineNextWeek } from "react-icons/md";
 import { GiFiles, GiMoneyStack  } from "react-icons/gi";
 import { FaCheckCircle } from "react-icons/fa"; 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { logoutUser } from "../store/UserSlice";
+import cogoToast from "cogo-toast";
 
 const Overview2 = () => {
   // const [metrics, setMetrics] = useState([
@@ -24,22 +26,39 @@ const Overview2 = () => {
   const [employee, setEmployee] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
   const [visit , setVisit] = useState([]);
-
-  const UserId = useSelector((state) => state.auth.user.id);
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setLeads(response.data);
     } catch (error) {
-      console.error("Error fetching leads:", error);
+   
+      if (error?.response?.status === 401) {
+        navigate("/main_page_crm");
+        dispatch(logoutUser());
+        cogoToast.error("Token is expired Please Login Again !!");
+      }
     }
   };
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/employee-super-admin`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployee(response.data);
     } catch (error) {
       console.error("Error fetching employee data:", error);
@@ -48,7 +67,12 @@ const Overview2 = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit`
+        `https://crm.dentalguru.software/api/employe-all-visit-super-admin`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
       setVisit(response.data);
@@ -61,7 +85,7 @@ const Overview2 = () => {
 
   // const fetchQuotation = async () => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-data`);
+  //     const response = await axios.get(`https://crm.dentalguru.software/api/get-quotation-data`);
   //     console.log(response.data);
   //     setQuotation(response.data.data);
   //   } catch (error) {
@@ -71,7 +95,7 @@ const Overview2 = () => {
 
   // const fetchInvoice = async () => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`);
+  //     const response = await axios.get(`https://crm.dentalguru.software/api/invoice-data`);
   //     setInvoice(response.data);
   //   } catch (error) {
   //     console.error("Error fetching invoices:", error);

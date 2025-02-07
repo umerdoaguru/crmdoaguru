@@ -19,7 +19,9 @@ const ViewAllFollowUp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
+  const EmpId = useSelector((state) => state.auth.user);
 
+  const token = EmpId?.token;
   useEffect(() => {
     fetchFollowUp();
   }, [id, render]);
@@ -27,7 +29,12 @@ const ViewAllFollowUp = () => {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up/${id}`
+        `https://crm.dentalguru.software/api/employe-follow-up/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setFollow_Up(response.data);
       console.log(response);
@@ -44,12 +51,12 @@ const ViewAllFollowUp = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up/${followup.id}`
+          `https://crm.dentalguru.software/api/employe-follow-up/${followup.id}`
         );
         if (response.status === 200) {
           console.log("follow up deleted successfully");
           const putResponse = await axios.put(
-            `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyFollowUpStatus/${follow_up[0].lead_id
+            `https://crm.dentalguru.software/api/updateOnlyFollowUpStatus/${follow_up[0].lead_id
               
             }`,
             { follow_up_status: "pending" }
@@ -93,7 +100,7 @@ const ViewAllFollowUp = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up`, modalData);
+      const response = await axios.put(`https://crm.dentalguru.software/api/employe-follow-up`, modalData);
       if (response.status === 200) {
         cogoToast.success("Follow Up updated successfully!");
         setRender(!render); // Refresh the list after updating

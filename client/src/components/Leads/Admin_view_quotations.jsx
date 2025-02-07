@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -7,16 +7,19 @@ import ReactPaginate from "react-paginate";
 
 import MainHeader from '../MainHeader';
 import Sider from '../Sider';
+import { IoIosArrowBack } from "react-icons/io";
 
 const Admin_view_quotations = () => {
   const [quotations, setQuotations] = useState([]);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10); // Number of items per page
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   useEffect(() => {
     fetchQuotations();
   }, [id, render]);
@@ -24,7 +27,12 @@ const Admin_view_quotations = () => {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byLead/${id}`
+        `https://crm.dentalguru.software/api/get-quotation-byLead/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setQuotations(response.data);
       console.log(response);
@@ -40,7 +48,7 @@ const Admin_view_quotations = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`
+          `https://crm.dentalguru.software/api/quotation/${id}`
         );
         if (response.status === 200) {
           console.log("Quotation deleted successfully");
@@ -56,7 +64,7 @@ const Admin_view_quotations = () => {
   const handleCopyQuotation = async (quotationId) => {
     try {
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/copy-quotation/${quotationId}`
+        `https://crm.dentalguru.software/api/copy-quotation/${quotationId}`
       );
       setRender(!render);
     } catch (error) {
@@ -94,8 +102,14 @@ const Admin_view_quotations = () => {
     <>
       <MainHeader />
       <Sider />
-      <div className="container mt-4">
+      <div className="container mt-4 2xl:w-[91%] 2xl:ml-36">
         <div className="w-full px-2 mx-auto p-4">
+        <button
+              onClick={() => navigate(-1)}
+            className="bg-blue-500 text-white mt-5 px-4 py-2 rounded"
+          >
+            Go Back
+          </button>
           <div className="w-full px-2 mt-4">
             <h2 className="text-2xl font-bold mb-4 text-center">
               All Leads Quotation

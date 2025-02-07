@@ -4,12 +4,15 @@ import MainHeader from "../MainHeader";
 import Sider from "../Sider";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 function TotalEmployee() {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 7; // Default leads per page
   const navigate = useNavigate();
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -17,7 +20,12 @@ function TotalEmployee() {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees"
+        "https://crm.dentalguru.software/api/getAllEmployees",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       const { employees } = response.data;
       setEmployees(employees || []); // Ensure employees is always an array

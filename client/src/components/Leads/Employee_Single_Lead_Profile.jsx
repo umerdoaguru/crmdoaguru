@@ -8,6 +8,7 @@ import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 import Sider from "../Sider";
 import cogoToast from "cogo-toast";
 import UpdateLeadField from "../EmployeeModule/updateLeadField";
+import { useSelector } from "react-redux";
 function Employee_Single_Lead_Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -16,8 +17,28 @@ function Employee_Single_Lead_Profile() {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupVisit, setShowPopupVisit] = useState(false);
   const [showPopupFollowUp, setShowPopupFollowUp] = useState(false);
+  const [showPopupRemark, setShowPopupRemark] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
+  const [isOtherReason, setIsOtherReason] = useState(false);
+  
+  const [currentLead, setCurrentLead] = useState({
+    lead_status: "",
+    visit_date: "",
+    visit: "",
+    quotation_status: "",
+    // invoice_status: "",
+    deal_status: "",
+    meeting_status: "",
+    booking_amount:"",
+      payment_mode:"",
+      registry:"",
+    reason: "",
+  
+
+
+    follow_up_status: "",
+  });
 
   const [visitLead, setVisitLead] = useState({
     
@@ -41,10 +62,26 @@ function Employee_Single_Lead_Profile() {
 
   });
 
+
+const [remark, setRemark] = useState({
+  lead_id: "",
+  name: "",
+  employee_name: "",
+  employeeId: "",
+  remark_status: "",
+  
+  date: "",
+});
+
+const EmpId = useSelector((state) => state.auth.user);
+
+const token = EmpId?.token;
+
   const [quotationCreated, setQuotationCreated] = useState(false);
   const [visitCreated, setVisitCreated] = useState(false);
   const [followCreated, setFollowCreated] = useState(false);
-
+  const [remarkCreated, setRemarkCreated] = useState(false);
+ 
   // const leads = [{ /* lead data */ }];
 
   const fieldConfig = [
@@ -55,7 +92,12 @@ function Employee_Single_Lead_Profile() {
       options: [
         { value: "", label: "Select Lead Status" },
         { value: "pending", label: "Pending" },
-        { value: "in progress", label: "In Progress" },
+        { value: "active lead", label: "Active lead" },
+       
+        { value: "calling done", label: "Calling Done" },
+        { value: "site visit done", label: "Site Visit Done" },
+        { value: "interested", label: "Interested" },
+        { value: "not-interested", label: "Not-Interested" },
         { value: "completed", label: "Completed" },
       ],
     },
@@ -66,9 +108,22 @@ function Employee_Single_Lead_Profile() {
       type: "select",
       options: [
         { value: "", label: "Select Deal Status" },
-        { value: "pending", label: "pending" },
-        { value: "close", label: "close" },
-        { value: "cancelled", label: "cancelled" },
+        { value: "pending", label: "Pending" },
+        { value: "close", label: "Close" },
+        { value: "cancelled", label: "Cancelled" },
+      
+      ],
+    },
+    {
+      name: "meeting_status",
+      label: "Meeting_Status",
+      type: "select",
+      options: [
+        { value: "", label: "Select Deal Status" },
+        { value: "pending", label: "Pending" },
+        { value: "done by manager", label: "Done By Manager" },
+        { value: "done by director", label: "Done By Director" },
+     
       
       ],
     },
@@ -77,11 +132,22 @@ function Employee_Single_Lead_Profile() {
       label: "Deal Close Date",
       type: "date", // Changed to "date" for consistency
     },
-    {
-      name: "reason",
-      label: "Reason",
-      type: "textarea",
-    },
+
+
+      {
+        name: "reason",
+        label: "Reason",
+        type: "select",
+        options: [
+          { value: "", label: "Select Reason" },
+          { value: "pending", label: "Pending" },
+          { value: "price", label: "Price" },
+          { value: "budget", label: "Budget" },
+          { value: "distance", label: "Distance" },
+          { value: "other", label: "Other" }, // Add "Other" option
+        ],
+      },
+    
    
 
     {
@@ -95,17 +161,7 @@ function Employee_Single_Lead_Profile() {
         { value: "done", label: "Done" },
       ],
     },
-    {
-      name: "status",
-      label: "Status",
-      type: "select",
-      options: [
-        { value: "", label: "Status" },
-        { value: "pending", label: "Pending" },
-        { value: "interested", label: "Interested" },
-        { value: "not-interested", label: "Not-Interested" },
-      ],
-    },
+   
     {
       name: "booking_amount",
       label: "Booking Amount",
@@ -119,6 +175,7 @@ function Employee_Single_Lead_Profile() {
         type: "select",
         options: [
           { value: "", label: "Select Payment Mode" },
+          { value: "pending", label: "Pending" },
           { value: "credit-card", label: "Credit Card" },
           { value: "debit-card", label: "Debit Card" },
           { value: "net-banking", label: "Net Banking" },
@@ -133,6 +190,7 @@ function Employee_Single_Lead_Profile() {
         type: "select",
         options: [
           { value: "", label: "Select Payment Mode" },
+          { value: "pending", label: "Pending" },
           { value: "in progress", label: "In Progress" },
           { value: "done", label: "Done" },
          
@@ -140,31 +198,17 @@ function Employee_Single_Lead_Profile() {
       },
   ];
 
-  const [currentLead, setCurrentLead] = useState({
-    lead_status: "",
-    visit_date: "",
-    visit: "",
-    quotation_status: "",
-    // invoice_status: "",
-    deal_status: "",
-    booking_amount:"",
-      payment_mode:"",
-      registry:"",
-    reason: "",
-    status: "",
-
-    follow_up_status: "",
-  });
-
+  
   useEffect(() => {
     fetchLeads();
 
     fetchVisit();
     fetchFollowUp();
+    fetchRemark();
   }, [id]);
   // const fetchLeads = async () => {
   //   try {
-  //     const response = await axios.get(https://crmdemo.vimubds5.a2hosted.com/api/leads/${id});
+  //     const response = await axios.get(https://crm.dentalguru.software/api/leads/${id});
   //     setLeads(response.data);
   //     console.log(response);
   //   } catch (error) {
@@ -174,7 +218,12 @@ function Employee_Single_Lead_Profile() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${id}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads-employee/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       console.log(response.data);
       setLeads(response.data);
 
@@ -202,7 +251,12 @@ function Employee_Single_Lead_Profile() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`
+        `https://crm.dentalguru.software/api/employe-visit/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
       setVisit(response.data);
@@ -220,7 +274,12 @@ function Employee_Single_Lead_Profile() {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up/${id}`
+        `https://crm.dentalguru.software/api/employe-follow-up/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       console.log(response.data);
       setFollow_Up(response.data);
@@ -230,6 +289,26 @@ function Employee_Single_Lead_Profile() {
       console.error("Error fetching quotations:", error);
     }
   };
+  const fetchRemark = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm.dentalguru.software/api/remarks/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
+      );
+      console.log(response.data);
+      setRemark(response.data[0]);
+      setRemarkCreated(response.data.length > 0); // Check if remarks exist
+    } catch (error) {
+      console.error("Error fetching remarks:", error);
+    }
+  };
+  
+
+
   const handleBackClick = () => {
     navigate(-1); // -1 navigates to the previous page in history
   };
@@ -248,10 +327,15 @@ function Employee_Single_Lead_Profile() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentLead((prevLead) => ({
-      ...prevLead,
-      [name]: value,
-    }));
+    setCurrentLead((prevState) => ({ ...prevState, [name]: value }));
+  
+    if (name === "reason") {
+      // Check if "Other" is selected
+      setIsOtherReason(value === "other");
+      if (value !== "other") {
+        setCurrentLead((prevState) => ({ ...prevState, customReason: "" })); // Clear custom reason if not "Other"
+      }
+    }
   };
   const handleInputChangeVisit = (e) => {
     const { name, value } = e.target;
@@ -268,9 +352,20 @@ function Employee_Single_Lead_Profile() {
     }));
   };
 
+  const handleInputChangeRemark = (e) => {
+    const { name, value } = e.target;
+    setRemark((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  
+
   const handleUpdate = (lead) => {
     setIsEditing(true);
     setCurrentLead(lead);
+    console.log(lead);
+    
     setShowPopup(true);
   };
 
@@ -300,33 +395,60 @@ function Employee_Single_Lead_Profile() {
     });
     setShowPopupFollowUp(true);
   };
+  const handleCreateClickRemark = () => {
+    setRemark({
+      lead_id: "",
+      name: "",
+      employee_name: "",
+      employeeId: "",
+      remark_status: "",
+      
+      date: "",
+    }); // Reset remark state
+    setShowPopupRemark(true); // Open the popup for creating a remark
+  };
+  
+
+
   const handleViewVisit = () => {
     navigate(`/view_visit/${leads[0].lead_id}`);
   };
   const handleViewFollowUp = () => {
     navigate(`/view_follow_up/${leads[0].lead_id}`);
   };
+  const handleViewRemark = () => {
+    navigate(`/view_remark/${leads[0].lead_id}`);
+  };
 
   const saveChanges = async () => {
     console.log(currentLead);
-    if (currentLead.deal_status !== leads[0].deal_status) {
-      if (currentLead.d_closeDate === "pending") {
-        alert("Please update the deal close date as well");
-        return;
-      }
-    }
+   
 
-    if (currentLead.visit !== leads[0].visit) {
-      if (currentLead.visit_date === "pending") {
-        alert("Please update the visit date as well");
-        return;
-      }
-    }
+
+    
+
+    const leadData = {
+      ...currentLead,
+      reason: isOtherReason  ? currentLead.customReason || leads[0]?.reason 
+      : currentLead.reason // Use the default value if untouched
+    };
     try {
+      if (currentLead.deal_status == 'close') {
+        if (currentLead.d_closeDate === "pending") {
+          alert("Please update the deal close date as well");
+          return;
+        }
+      }
+      if (currentLead.lead_status == 'not-interested') {
+        if (currentLead.reason === "pending" || currentLead.customReason === currentLead.reason) {
+          alert("Please update the reason as well");
+          return;
+        }
+      }
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/updateLeadStatus/${currentLead.lead_id}`,
-        currentLead
+        `https://crm.dentalguru.software/api/updateLeadStatus/${currentLead.lead_id}`,
+        leadData
       );
 
       if (response.status === 200) {
@@ -355,14 +477,13 @@ function Employee_Single_Lead_Profile() {
       cogoToast.error("Please select a visit date.");
       return;
     }
-   
   
-    console.log(visitLead);
+    console.log("Visit data:", visitLead);
   
     try {
-      // Send updated data to the backend using Axios
+      // First API call: Create a visit
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit`,
+        `https://crm.dentalguru.software/api/employe-visit`,
         {
           lead_id: leads[0].lead_id,
           name: leads[0].name,
@@ -370,17 +491,16 @@ function Employee_Single_Lead_Profile() {
           employee_name: leads[0].assignedTo,
           visit: visitLead.visit,
           visit_date: visitLead.visit_date,
-         
         }
       );
   
       if (response.status === 201) {
-        console.log("Updated successfully:", response.data);
+        console.log("Visit created successfully:", response.data);
         cogoToast.success("Visit created successfully");
   
-        // Update the visit status after saving the visit
+        // Second API call: Update visit status
         const updateResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateVisitStatus/${leads[0].lead_id}`,
+          `https://crm.dentalguru.software/api/updateVisitStatus/${leads[0].lead_id}`,
           { visit: visitLead.visit }
         );
   
@@ -390,20 +510,44 @@ function Employee_Single_Lead_Profile() {
         } else {
           console.error("Error updating visit status:", updateResponse.data);
           cogoToast.error("Failed to update visit status.");
+          return; // Exit if this step fails
         }
   
-        closePopupVisit(); // Close the popup on success
+        // Third API call: Update lead status
+        const updateLeadStatusResponse = await axios.put(
+          `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
+          { lead_status: "site visit done" }
+        );
+  
+        if (updateLeadStatusResponse.status === 200) {
+          console.log(
+            "Lead status updated successfully:",
+            updateLeadStatusResponse.data
+          );
+          cogoToast.success("Lead status updated successfully");
+        } else {
+          console.error(
+            "Error updating lead status:",
+            updateLeadStatusResponse.data
+          );
+          cogoToast.error("Failed to update lead status.");
+          return; // Exit if this step fails
+        }
+  
+        // Close popup and refresh data after all calls are successful
+        closePopupVisit();
         fetchVisit();
         fetchLeads();
       } else {
-        console.error("Error updating visit:", response.data);
+        console.error("Error creating visit:", response.data);
         cogoToast.error("Failed to create visit.");
       }
     } catch (error) {
       console.error("Request failed:", error);
-      cogoToast.error("Failed to create visit.");
+      cogoToast.error("An error occurred while processing your request.");
     }
   };
+  
   // Validate required fields
   // if (!follow_up.follow_up_type) {
   //   cogoToast.error("Please select a follow up type.");
@@ -431,8 +575,8 @@ function Employee_Single_Lead_Profile() {
   
     try {
       // Send updated data to the backend using Axios
-      const postResponse = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up`,
+      const response = await axios.post(
+        `https://crm.dentalguru.software/api/employe-follow-up`,
         {
           lead_id: leads[0].lead_id,
           name: leads[0].name,
@@ -444,13 +588,13 @@ function Employee_Single_Lead_Profile() {
         }
       );
   
-      if (postResponse.status === 201) {
-        console.log("Follow-up created successfully:", postResponse.data);
+      if (response.status === 201) {
+        console.log("Follow-up created successfully:", response.data);
         cogoToast.success("Follow-up created successfully");
   
         // Update the Follow Up status after saving the Follow Up
         const putResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
+          `https://crm.dentalguru.software/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
           { follow_up_status: "in progress" }
         );
   
@@ -466,12 +610,50 @@ function Employee_Single_Lead_Profile() {
         fetchFollowUp();
         fetchLeads();
       } else {
-        console.error("Error creating follow-up:", postResponse.data);
+        console.error("Error creating follow-up:", response.data);
         cogoToast.error("Failed to create follow-up.");
       }
     } catch (error) {
       console.error("Request failed:", error);
       cogoToast.error("Failed to create follow-up.");
+    }
+  };
+  
+  const saveRemark = async () => {
+    if (!remark.remark_status) {
+      cogoToast.error("Please select a remark status.");
+      return;
+    }
+  
+    if (!remark.date) {
+      cogoToast.error("Please select a date.");
+      return;
+    }
+  
+    try {
+
+        const response = await axios.post(`https://crm.dentalguru.software/api/remarks`,
+        {
+          lead_id: leads[0].lead_id,
+          name: leads[0].name,
+          employee_name: leads[0].assignedTo,
+          employeeId: leads[0].employeeId,
+          remark_status: remark.remark_status,
+          date: remark.date,
+        }
+      );
+  
+      if (response.status === 200) {
+        cogoToast.success("Remark created and lead updated successfully");
+        closePopupRemark();
+        fetchRemark();
+        fetchLeads();
+      } else {
+        cogoToast.error("Failed to create remark and update lead.");
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+      cogoToast.error("Failed to create remark and update lead.");
     }
   };
   
@@ -487,6 +669,11 @@ function Employee_Single_Lead_Profile() {
   const closePopupFollowUp = () => {
     setShowPopupFollowUp(false);
   };
+  const closePopupRemark = () => {
+    setShowPopupRemark(false); // Close the popup
+   
+  };
+  
   
   const totalVisit = visit.length;
 console.log(totalVisit);
@@ -496,7 +683,15 @@ console.log(totalVisit);
       <MainHeader />
       <EmployeeeSider />
       <div className="flex flex-col 2xl:ml-44 mt-2">
+     
         <div className="container mt-5 px-2 mx-auto p-4">
+          <div className="mt-5">
+          <button
+                onClick={() => navigate(-1)}
+                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors max-2xl:ml-[4rem]"
+              >
+                Back
+              </button></div>
           <h1 className="text-2xl text-center mt-[2rem]">Leads Profile</h1>
           <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
           <div className="flex flex-wrap mb-4">
@@ -541,7 +736,7 @@ console.log(totalVisit);
                     </div>
                   </div>
                   <div>
-                    <label className="text-info">Subject</label>
+                    <label className="text-info">Project</label>
                     <div className="p-2 bg-gray-100 rounded">
                       <p className="m-0">{lead.subject}</p>
                     </div>
@@ -566,262 +761,184 @@ console.log(totalVisit);
               </div>
             ))}
           </div>
+          <div className="flex flex-wrap justify-between gap-4 p-4">
+  {/* Left Section for Creation Buttons */}
+  <div className="flex flex-wrap gap-2">
+    <button
+      onClick={() => handleQuotation(leads[0])}
+      className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+    >
+      Quotation Creation
+    </button>
+    <button
+      className="bg-orange-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      onClick={handleCreateClick}
+    >
+      Visit Creation
+    </button>
+    <button
+      className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      onClick={handleCreateClickFollowUp}
+    >
+      Follow Up Creation
+    </button>
+    <button
+      className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      onClick={handleCreateClickRemark}
+    >
+      Remark Creation
+    </button>
+  </div>
 
-          <div className=" flex justify-between">
-            <div className="">
-              <button
-                onClick={() => handleQuotation(leads[0])}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Quotation Creation
-              </button>
-              <button
-                className="bg-orange-500 text-white px-4 py-2 mx-2 rounded"
-                onClick={handleCreateClick}
-              >
-                Visit Creation
-              </button>
-              <button
-                className="bg-yellow-500 text-white px-4 py-2  rounded"
-                onClick={handleCreateClickFollowUp}
-              >
-                Follow Up Creation
-              </button>
-            </div>
-            <div className="">
-              {/* Conditionally render the View Quotation button */}
-              <div className="flex">
-                {quotationCreated ? (
-                  <button
-                    onClick={() => handleViewQuotation(leads[0])}
-                    className="bg-blue-500 text-white px-4 py-2 mx-2 rounded"
-                  >
-                    View Quotation
-                  </button>
-                ) : (
-                  <p className="text-white bg-red-400 text-center px-4 py-2 mx-2 rounded">
-                    Quotation not yet created
-                  </p>
-                )}
+  {/* Right Section for View Buttons */}
+  <div className="flex flex-wrap gap-2">
+    {/* Quotation */}
+    {quotationCreated ? (
+      <button
+        onClick={() => handleViewQuotation(leads[0])}
+        className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Quotation
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
+        Quotation not yet created
+      </p>
+    )}
 
-                {/* Conditionally render the View Quotation button */}
-                {visitCreated ? (
-                  <button
-                    onClick={handleViewVisit}
-                    className="bg-green-500 text-white px-4 py-2 mx-2 rounded"
-                  >
-                    View Visit
-                  </button>
-                ) : (
-                  <p className="text-white bg-red-400 text-center px-4 py-2  rounded">
-                    Visit not yet created
-                  </p>
-                )}
+    {/* Visit */}
+    {visitCreated ? (
+      <button
+        onClick={handleViewVisit}
+        className="bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Visit
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
+        Visit not yet created
+      </p>
+    )}
 
-{followCreated ? (
-  <button
-    onClick={handleViewFollowUp}
-    className="bg-yellow-500 text-white px-4 py-2 mx-2 rounded"
-  >
-    View Follow Up
-  </button>
-) : (
-  <p className="text-white bg-red-400 text-center px-4 py-2 mx-2 rounded">
-    Follow Up not yet created
-  </p>
-)}
+    {/* Follow Up */}
+    {followCreated ? (
+      <button
+        onClick={handleViewFollowUp}
+        className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Follow Up
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
+        Follow Up not yet created
+      </p>
+    )}
 
-              </div>
-            </div>
-          </div>
+    {/* Remark */}
+    {remarkCreated ? (
+      <button
+        onClick={handleViewRemark}
+        className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Remark
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
+        Remark not yet created
+      </p>
+    )}
+  </div>
+</div>
 
-          <div className="overflow-x-auto mt-5">
-            <table className="min-w-full whitespace-nowrap bg-white border">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Assigned To
-                  </th>
-                 
-              
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Quotation
-                  </th>
-                
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Visit
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Deal Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Deal Close Date
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Booking Amount
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                   Payment Mode 
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                   Registry
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Reason
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Follow Up Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    {" "}
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {leads.map((lead, index) => (
-                  <tr
-                    key={lead.id}
-                    className={index % 2 === 0 ? "bg-gray-100" : ""}
-                  >
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.name}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
-                    </td>
 
-                   
-                
-              
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.quotation}
-                    </td>
+          <div className="overflow-x-auto mt-1">
+          <table className="min-w-full whitespace-nowrap bg-white border">
+  <thead>
+    <tr>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Remark Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Answer Remark</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Meeting Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned By</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Address</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Booking Amount</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Deal Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Employee ID</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Follow-Up Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Payment Mode</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Quotation</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Quotation Status</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Reason</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Registry</th>
+    
+      <th className="px-6 py-3 border-b-2 border-gray-300">Project</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Visit</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Close Date</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned Date</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Actual Date</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+  {leads.map((lead, index) => (
+  <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.lead_no}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.name}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.phone}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.leadSource}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.remark_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.answer_remark}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.meeting_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedBy}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.lead_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.address}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.booking_amount}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.deal_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.employeeId}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.follow_up_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.payment_mode}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.quotation}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.quotation_status}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.reason}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.registry}</td>
 
-                  
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.subject}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.visit}</td>
+    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
+      {lead.d_closeDate === "pending"
+        ? "pending"
+        : moment(lead.d_closeDate).format("DD MMM YYYY").toUpperCase()}
+    </td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+      {lead.createdTime
+        ? moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()
+        : "N/A"}
+    </td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+      {lead.actual_date
+        ? moment(lead.actual_date).format("DD MMM YYYY").toUpperCase()
+        : "N/A"}
+    </td>
+    <td className="px-6 py-4 border-b border-gray-200">
+      <button
+        className="text-blue-500 hover:text-blue-700"
+        onClick={() => handleUpdate(lead)}
+      >
+        Update
+      </button>
+    </td>
+  </tr>
+))}
 
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[black]">
-                      {lead.status}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[black]">
-                      {lead.visit}
-                    </td>
+  </tbody>
+</table>
 
-                    {lead.deal_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-
-                    {lead.deal_status === "close" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-                    {lead.deal_status === "cancelled" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[blue]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-                    {lead.deal_status === "in-progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[blue]">
-                        {lead.deal_status}
-                      </td>
-                    )}
-
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.d_closeDate}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.booking_amount}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.payment_mode}
-                    </td>
-                    <td className="px-6 py-4  border-b border-gray-200 text-gray-800">
-                      {lead.registry}
-                    </td>
-
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                      {lead.reason}
-                    </td>
-
-                    {lead.lead_working_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-                    {lead.lead_working_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[yellow]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-                    {lead.lead_working_status === "completed" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.lead_working_status}
-                      </td>
-                    )}
-
-                    {lead.follow_up_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-
-                    {lead.follow_up_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-amber-600">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-                    {lead.follow_up_status === "done" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.follow_up_status}
-                      </td>
-                    )}
-                    {lead.lead_status === "pending" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[red]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-
-                    {lead.lead_status === "in progress" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[orange]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-                    {lead.lead_status === "completed" && (
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-[green]">
-                        {lead.lead_status}
-                      </td>
-                    )}
-                    <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                      <button
-                        className="text-blue-500 hover:text-blue-700"
-                        onClick={() => handleUpdate(lead)}
-                      >
-                        Update
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
 
           {showPopup && (
@@ -832,15 +949,38 @@ console.log(totalVisit);
                 </h2>
 
                 {/* Render Form Fields */}
-                {fieldConfig.map((field) => (
-                  <UpdateLeadField
-                    key={field.name}
-                    field={field}
-                    value={currentLead[field.name]}
-                    onChange={handleInputChange}
-                  />
-                ))}
+                
+                  {fieldConfig.map((field) => (
+                    <div key={field.name}>
+                      <UpdateLeadField
+                        field={field}
+                        value={currentLead[field.name]}
+                        onChange={handleInputChange}
+                      />
+                  
+                      {/* Conditionally Render Text Input for "Other" */}
+                      {field.name === "reason" && isOtherReason && (
+                        <div className="mt-2">
+                          <label className="block text-gray-700">Specify Other Reason</label>
+                          <input
+                            type="text"
+                            name="customReason"
+      value={currentLead.customReason}
+      onChange={(e) => handleInputChange(e)}
+                            className="w-full px-3 py-2 border rounded"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  
+              
+                
+               
 
+
+              
                 {/* Save and Cancel Buttons */}
                 <div className="flex justify-end">
                   <button
@@ -1012,6 +1152,79 @@ console.log(totalVisit);
               </div>
             </div>
           )}
+
+{showPopupRemark && (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+      <h2 className="text-xl mb-4">{"Add Remark"}</h2>
+
+      <div className="mb-4">
+        <label className="block text-gray-700">Lead ID</label>
+        <input
+          type="number"
+          name="lead_id"
+          value={leads[0].lead_id}
+          onChange={handleInputChangeRemark}
+          className={`w-full px-3 py-2 border  rounded`}
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={leads[0].name}
+          onChange={handleInputChangeRemark}
+          className={`w-full px-3 py-2 border  rounded`}
+        />
+      </div>
+
+     
+
+      <div className="mb-4">
+        <label className="block text-gray-700">Remark Status</label>
+        <input
+        type="text"
+          name="remark_status"
+          value={remark.remark_status}
+          onChange={handleInputChangeRemark}
+          className={`w-full px-3 py-2 border  rounded`}
+        />
+         
+      </div>
+
+      
+
+      <div className="mb-4">
+        <label className="block text-gray-700">Date</label>
+        <input
+          type="date"
+          name="date"
+          value={remark.date}
+          onChange={handleInputChangeRemark}
+          className={`w-full px-3 py-2 border  rounded`}
+        />
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+          onClick={saveRemark}
+        >
+          Save
+        </button>
+        <button
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+          onClick={closePopupRemark}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </>

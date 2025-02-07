@@ -6,6 +6,7 @@ import Sider from "../components/Sider";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import MainHeader from "../components/MainHeader"
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 
 const EmployeeManagement = () => {
@@ -23,7 +24,8 @@ const EmployeeManagement = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 10; // Default leads per page
   const navigate = useNavigate(); // Initialize useNavigate
-
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -31,7 +33,12 @@ const EmployeeManagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees"
+        "https://crm.dentalguru.software/api/getAllEmployees",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       const { employees } = response.data;
       setEmployees(employees || []); // Ensure employees is always an array
@@ -93,7 +100,7 @@ const EmployeeManagement = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/checkEmail", {
+      const response = await axios.get("https://crm.dentalguru.software/api/checkEmail", {
         params: { email },
       });
       return response.data.exists;
@@ -111,12 +118,12 @@ const EmployeeManagement = () => {
         // Update existing employee
         const employeeToUpdate = employees[editingIndex];
         await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateEmployee/${employeeToUpdate.employeeId}`,
+          `https://crm.dentalguru.software/api/updateEmployee/${employeeToUpdate.employeeId}`,
           newEmployee
         );
       } else {
         // Add new employee
-        await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/addEmployee", newEmployee);
+        await axios.post("https://crm.dentalguru.software/api/addEmployee", newEmployee);
       }
       setNewEmployee({
         name: "",
@@ -155,7 +162,7 @@ const EmployeeManagement = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/deleteEmployee/${employeeId}`
+          `https://crm.dentalguru.software/api/deleteEmployee/${employeeId}`
         );
         fetchEmployees(); // Fetch employees to update the list
       } catch (error) {

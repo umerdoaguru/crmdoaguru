@@ -16,7 +16,18 @@ const EmployeeVisitData = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 7; // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
+  const [selectedColumns, setSelectedColumns] = useState([
+    'lead_id',
+'name',
+'employee_name',
+'employeeId',
+'visit',
+'report',
+'visit_date',
+
+]);
 
   // Fetch leads from the API
   useEffect(() => {
@@ -26,7 +37,12 @@ const EmployeeVisitData = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employebyid-visit/${EmpId}`
+        `https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       // Filter out leads where visit is "Pending"
       const nonPendingLeads = response.data.filter(
@@ -40,25 +56,79 @@ const EmployeeVisitData = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
   useEffect(() => {
+    let filtered = leads;
+
+    // Filter by date
     if (startDate && endDate) {
-      const filtered = leads.filter((lead) => {
+      filtered = filtered.filter((lead) => {
         const visitDate = moment(lead.visit_date, "YYYY-MM-DD");
         return visitDate.isBetween(startDate, endDate, undefined, "[]");
       });
-      setFilteredLeads(filtered);
-    } else {
-      setFilteredLeads(leads);
     }
-  }, [startDate, endDate, leads]);
+
+   
+    setFilteredLeads(filtered);
+  }, [startDate, endDate,  leads]);
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredLeads);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Leads");
-    XLSX.writeFile(workbook, "LeadsData.xlsx");
+    // Map to rename keys for export
+    const columnMapping = {
+        lead_id: "Lead ID",          
+        name: "Name",                
+        employee_name: "Employee Name", 
+        employeeId: "Employee ID",   
+        visit: "Visit",              
+        report: "Report",             
+        visit_date: "Visit Date",    
+      };
+      
+  
+    const completedLeads = filteredLeads
+      .filter((lead) => lead.visit !== "pending")
+      .map((lead) => {
+        const formattedLead = {};
+  
+        // Dynamically include selected columns
+        selectedColumns.forEach((col) => {
+          const newKey = columnMapping[col] || col; // Use mapped name if available
+          formattedLead[newKey] = 
+            (col === "visit_date") && lead[col]
+              ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
+              : lead[col]; // Format dates or copy value
+        });
+  
+      
+       
+        
+
+  
+        return formattedLead;
+      });
+       // Ensure we handle empty reports gracefully
+  if (completedLeads.length === 0) {
+    alert("No data available for the selected date range.");
+    return;
+  }
+
+  // Generate the Excel workbook
+  const worksheet = XLSX.utils.json_to_sheet(completedLeads);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+
+  // Generate a valid filename
+  const filename = ` Lead Report ${
+    startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
+  } to ${
+    endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
+  }.xlsx`;
+
+  // Download the Excel file
+  XLSX.writeFile(workbook, filename);
+  
+  
   };
+
 
  // Calculate total number of pages
  const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
@@ -127,10 +197,10 @@ const EmployeeVisitData = () => {
                       Visit 
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-black-500">
-                      Visit Date
+                      Report
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-black-500">
-                      Report
+                      Visit Date
                     </th>
                 
                   </tr>
@@ -164,12 +234,12 @@ const EmployeeVisitData = () => {
                      {visit.visit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                     {visit.report}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                    
           {moment(visit.visit_date).format("DD MMM YYYY").toUpperCase()}
 
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                     {visit.report}
                     </td>
       </tr>
     ))

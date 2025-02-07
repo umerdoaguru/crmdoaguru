@@ -194,19 +194,19 @@ const Reporting = () => {
   };
 
   const quotationAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "https://crm.dentalguru.software/api",
   });
 
   const invoiceAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "https://crm.dentalguru.software/api",
   });
 
   const employeeAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "https://crm.dentalguru.software/api",
   });
 
   const leadsAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "https://crm.dentalguru.software/api",
   });
 
   const formatData = (data) => {

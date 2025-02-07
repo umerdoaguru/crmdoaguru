@@ -12,18 +12,27 @@ import {
 } from "recharts";
 import styled from "styled-components";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const LeadVisitChart = () => {
   const [loading, setLoading] = useState(false); // Properly manage loading state
   const [visitData, setVisitData] = useState([]); // Correct state variable name
   const [error, setError] = useState(null); // To handle and display errors
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
+
 
   useEffect(() => {
     const fetchLeadsData = async () => {
       setLoading(true); // Start loading
 
       try {
-        const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit`);
+        const response = await axios.get(`https://crm.dentalguru.software/api/employe-all-visit-admin`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         const allLeads = response.data;
 
         const today = moment();

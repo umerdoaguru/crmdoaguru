@@ -19,7 +19,9 @@ const ViewAllVisit = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
+  const EmpId = useSelector((state) => state.auth.user);
 
+  const token = EmpId?.token;
   useEffect(() => {
     fetchvisit();
   }, [id, render]);
@@ -27,7 +29,12 @@ const ViewAllVisit = () => {
   const fetchvisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`
+        `https://crm.dentalguru.software/api/employe-visit/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setVisit(response.data);
       console.log(response);
@@ -41,34 +48,63 @@ const ViewAllVisit = () => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this visit?"
     );
-    if (isConfirmed) {
-      try {
-        const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${visit.id}`
-        );
-        if (response.status === 200) {
-          console.log("visit deleted successfully");
-
-        }
-        const updateResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateVisitStatus/${visit.lead_id}`,
-          { visit: 'pending' }
-        );
   
-        if (updateResponse.status === 200) {
-          console.log("Visit status updated successfully:", updateResponse.data);
-          cogoToast.success("Visit status updated successfully");
-        } else {
-          console.error("Error updating visit status:", updateResponse.data);
-          cogoToast.error("Failed to update visit status.");
-        }
-        console.log(response);
-        setRender(!render);
-      } catch (error) {
-        console.error("Error deleting visit:", error);
+    if (!isConfirmed) return;
+  
+    try {
+      // Delete the visit
+      const deleteResponse = await axios.delete(
+        `https://crm.dentalguru.software/api/employe-visit/${visit.id}`
+      );
+  
+      if (deleteResponse.status === 200) {
+        console.log("Visit deleted successfully");
+      } else {
+        console.error("Failed to delete visit:", deleteResponse.data);
+        cogoToast.error("Failed to delete visit.");
+        return;
       }
+  
+      // Update visit status
+      const updateVisitResponse = await axios.put(
+        `https://crm.dentalguru.software/api/updateVisitStatus/${visit.lead_id}`,
+        { visit: "pending" }
+      );
+  
+      if (updateVisitResponse.status === 200) {
+        console.log("Visit status updated successfully:", updateVisitResponse.data);
+      } else {
+        console.error("Error updating visit status:", updateVisitResponse.data);
+        cogoToast.error("Failed to update visit status.");
+        return;
+      }
+  
+      // Update lead status
+      const updateLeadStatusResponse = await axios.put(
+        `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${visit.lead_id}`,
+        { lead_status: "pending" }
+      );
+  
+      if (updateLeadStatusResponse.status === 200) {
+        console.log(
+          "Lead status updated successfully:",
+          updateLeadStatusResponse.data
+        );
+        cogoToast.success("Visit deleted and statuses updated successfully!");
+      } else {
+        console.error("Error updating lead status:", updateLeadStatusResponse.data);
+        cogoToast.error("Failed to update lead status.");
+        return;
+      }
+  
+      // Trigger UI update
+      setRender((prevRender) => !prevRender);
+    } catch (error) {
+      console.error("Error occurred during the deletion process:", error);
+      cogoToast.error("An error occurred. Please try again.");
     }
   };
+  
  // Function to send the PUT request to update the visit data
  const openModal = (data) => {
     setModalData(data);
@@ -91,7 +127,7 @@ const ViewAllVisit = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/employe-visit`, modalData);
+      const response = await axios.put(`https://crm.dentalguru.software/api/employe-visit`, modalData);
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
         setRender(!render); // Refresh the list after updating

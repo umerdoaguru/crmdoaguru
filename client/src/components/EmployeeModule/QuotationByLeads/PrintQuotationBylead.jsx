@@ -38,7 +38,7 @@ function PrintQuotationBylead() {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`
+        `https://crm.dentalguru.software/api/quotation/${id}`
       );
 
       if (response.status === 200) {
@@ -53,7 +53,7 @@ function PrintQuotationBylead() {
   };
   const fetchNotes = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/notes/${id}`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/notes/${id}`);
 
       if (response.status === 200) {
         setNotes(response.data);
@@ -68,7 +68,7 @@ function PrintQuotationBylead() {
     const fetchCompanyNames = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/header-footer-images/company-names`
+          `https://crm.dentalguru.software/api/header-footer-images/company-names`
         );
         if (response.status === 200) {
           setCompanyNames(response.data); // Assuming response.data is an array of company names
@@ -357,7 +357,7 @@ function PrintQuotationBylead() {
     const fetchImages = async () => {
       try {
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer",
+          "https://crm.dentalguru.software/api/company-header-footer",
           {
             company_name: selectedCompany,
           }

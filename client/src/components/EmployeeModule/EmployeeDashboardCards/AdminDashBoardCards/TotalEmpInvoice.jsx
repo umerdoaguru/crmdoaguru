@@ -9,12 +9,18 @@ import EmployeeSider from "./../../EmployeeSider";
 
 function TotalEmpInvoice() {
   const [invoices, setInvoices] = useState([]);
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId}`
+          `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setInvoices(response.data);
         console.log(response);

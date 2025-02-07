@@ -5,12 +5,15 @@ import SuperAdminSider from './SuperAdminSider';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 function SuperAdminTotalEmployee() {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 7; // Number of employees to display per page
   const navigate = useNavigate();
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
   useEffect(() => {
     fetchEmployees();
@@ -18,7 +21,12 @@ function SuperAdminTotalEmployee() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees');
+      const response = await axios.get('https://crm.dentalguru.software/api/getAllEmployees-super-admin',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       const { employees } = response.data;
       setEmployees(employees || []); // Ensure employees is always an array
     } catch (error) {

@@ -8,13 +8,19 @@ import MainHeader from "../../../MainHeader";
 import EmployeeSider from "./../../EmployeeSider";
 
 function TotalEmpQuotation() {
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
   const [quotations, setQuotations] = useState([]);
   useEffect(() => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byEmploye/${EmpId}`
+          `https://crm.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         );
         setQuotations(response.data);
         console.log(response);

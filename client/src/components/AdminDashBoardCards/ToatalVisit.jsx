@@ -17,7 +17,9 @@ const TotalVisit = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0); // Current page for pagination
   const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
- 
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
+
   const navigate = useNavigate();
   useEffect(() => {
     fetchLeads();
@@ -25,7 +27,12 @@ const TotalVisit = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit`);
+      const response = await axios.get(`https://crm.dentalguru.software/api/employe-all-visit`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       const nonPendingLeads = response.data.filter((lead) => lead.visit !== "pending");
 
       setLeads(nonPendingLeads);
@@ -104,11 +111,11 @@ const TotalVisit = () => {
             className="border rounded-2xl p-2 w-1/4"
           
           >
-            <option value={7}>7 Pages</option>
-            <option value={10}>10 Pages</option>
-            <option value={20}>20 Pages</option>
-            <option value={50}>50 Pages</option>
-            <option value="All">All Pages</option>
+                  <option value={7}>Number of rows: 7</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
           </select>
              </div>
             <table className="min-w-full divide-y divide-gray-200 border border-gray-300">

@@ -20,14 +20,16 @@ const ClosedDealReport = () => {
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
-    "createdTime",
     "name",
     "phone",
     "leadSource",
+    "remark_status",
+    "answer_remark",
+    "meeting_status",
+    "assignedBy",
     "lead_status",
     "address",
     "booking_amount",
-    "d_closeDate",
     "deal_status",
     "employeeId",
     "follow_up_status",
@@ -36,11 +38,15 @@ const ClosedDealReport = () => {
     "quotation_status",
     "reason",
     "registry",
-    "status",
+   
     "subject",
-    "visit"
+    "visit",
+    "d_closeDate",
+    "createdTime",
+    "actual_date",
   ]);
-  
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
   // Fetch leads from the API
   useEffect(() => {
@@ -51,11 +57,16 @@ const ClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/leads`
+        `https://crm.dentalguru.software/api/leads`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       // Filter out leads where deal status is "pending"
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status !== "pending"
+        (lead) => lead.deal_status == "close"
       );
 
       setLeads(nonPendingLeads);
@@ -67,7 +78,12 @@ const ClosedDealReport = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -116,27 +132,32 @@ const ClosedDealReport = () => {
   const downloadExcel = () => {
     // Map to rename keys for export
     const columnMapping = {
-        lead_no: "Lead Number",
-        assignedTo: "Assigned To",
-        createdTime: "Assigned Date",
-        name: "Name",
-        phone: "Phone",
-        leadSource: "Lead Source",
-        lead_status: "Lead Status",
-        address: "Address",
-        booking_amount: "Booking Amount",
-        d_closeDate: "Close Date",
-        deal_status: "Deal Status",
-        employeeId: "Employee ID",
-        follow_up_status: "Follow-up Status",
-        payment_mode: "Payment Mode",
-        quotation: "Quotation",
-        quotation_status: "Quotation Status",
-        reason: "Reason",
-        registry: "Registry",
-        status: "Status",
-        subject: "Subject",
-        visit: "Visit"
+      lead_no: "Lead Number",
+      assignedTo: "Assigned To",
+      name: "Name",
+      phone: "Phone",
+      leadSource: "Lead Source",
+      remark_status: "Remark Status",
+      answer_remark: "Answer Remark",
+      meeting_status: "Meeting Status",
+      assignedBy: "Assigned By",
+      lead_status: "Lead Status",
+      address: "Address",
+      booking_amount: "Booking Amount",
+      deal_status: "Deal Status",
+      employeeId: "Employee ID",
+      follow_up_status: "Follow-up Status",
+      payment_mode: "Payment Mode",
+      quotation: "Quotation",
+      quotation_status: "Quotation Status",
+      reason: "Reason",
+      registry: "Registry",
+      
+      subject: "Project",
+      visit: "Visit",
+      d_closeDate: "Close Date",
+      createdTime: "Assigned Date",
+      actual_date: "Actual Date",
       };
       
   
@@ -171,8 +192,8 @@ const ClosedDealReport = () => {
     // Generate Excel file
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Close Deal Report");
-    XLSX.writeFile(workbook, "Cloase Deal Report.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Closed Lead of ${duration} Report.xlsx`);
+    XLSX.writeFile(workbook, `Closed Lead of ${duration} Report.xlsx`);
   };
 
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
@@ -242,9 +263,6 @@ const ClosedDealReport = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Name
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Subject
-                </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source
@@ -253,6 +271,9 @@ const ClosedDealReport = () => {
                
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   FollowUp Status
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Project
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Deal Status
@@ -291,9 +312,6 @@ const ClosedDealReport = () => {
                       {lead.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.subject}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
@@ -305,6 +323,9 @@ const ClosedDealReport = () => {
             
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.follow_up_status}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.subject}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.deal_status}

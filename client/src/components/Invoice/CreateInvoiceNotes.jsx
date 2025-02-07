@@ -26,7 +26,7 @@ const CreateInvoiceNotes = () => {
     try {
       for (const note of selectedNotes) {
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/invoice-notes",
+          "https://crm.dentalguru.software/api/invoice-notes",
           {
             noteTexts: [note],
             invoiceId: id,

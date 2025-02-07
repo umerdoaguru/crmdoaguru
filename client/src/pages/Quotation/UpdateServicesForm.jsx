@@ -11,7 +11,7 @@ const UpdateServicesForm = ({
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${quotationId}`
+        `https://crm.dentalguru.software/api/quotation/${quotationId}`
       );
       setServices(response.data);
     } catch (error) {
@@ -23,7 +23,7 @@ const UpdateServicesForm = ({
     e.preventDefault();
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${quotationId}`,
+        `https://crm.dentalguru.software/api/quotation/${quotationId}`,
         {
           services,
         }

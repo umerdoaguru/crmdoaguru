@@ -29,13 +29,19 @@ function EmployeeProfile() {
 const itemsPerPage = 7; 
 const navigate = useNavigate();
 
-
+const superadminuser = useSelector((state) => state.auth.user);
+const token = superadminuser.token;
 
 
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${employeeId}`
+        `https://crm.dentalguru.software/api/employe-leads-super-admin/${employeeId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       const data = response.data;
       setLeads(data);
@@ -60,7 +66,12 @@ const navigate = useNavigate();
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employeeProfile/${employeeId}`
+          `https://crm.dentalguru.software/api/employeeProfile-super-admin/${employeeId}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
         ); // Fetch employee data
         setUser(response.data[0]); // Set employee data to state
         console.log(response.data); // Debug: log employee data

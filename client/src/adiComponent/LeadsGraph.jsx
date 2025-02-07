@@ -10,15 +10,23 @@ import {
 } from "recharts";
 import axios from "axios";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const LeadsGraph = () => {
   const [leadsData, setLeadsData] = useState([]);
   const [error, setError] = useState(null);
+  const adminuser = useSelector((state) => state.auth.user);
 
+  const token = adminuser?.token;
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
-        const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+        const response = await axios.get("https://crm.dentalguru.software/api/leads",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }});
         const allLeads = response.data;
 
         const today = moment();

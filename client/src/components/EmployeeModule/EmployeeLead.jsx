@@ -1,138 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
 
-// import moment from 'moment';
-
-// import cogoToast from 'cogo-toast';
-// import { Link, useNavigate } from 'react-router-dom';
-// import MainHeader from '../MainHeader';
-// import EmployeeSider from './EmployeeSider';
-// import UpdateLeadField from './updateLeadField';
-// import { useSelector } from 'react-redux';
-
-// function EmployeeLead() {
-//     const [leads, setLeads] = useState([]);
-//     const navigate = useNavigate();
-//     const [currentLead, setCurrentLead] = useState({
-
-//         lead_status: 'in progress',
-//         quotation_status: '',
-//         invoice_status: '',
-//         deal_status: '',
-//         reason: '',
-
-//         follow_up_status: ''
-//     });
-
-//     // Fetch leads from the API
-//     useEffect(() => {
-//         fetchLeads();
-//     }, []);
-//     const EmpId = useSelector(state => state.auth.user.id);
-
-//     const fetchLeads = async () => {
-//         try {
-//           const response = await axios.get(
-//             `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`);
-//           const data = response.data;
-//           setLeads(data);
-//         } catch (error) {
-//           console.error("Error fetching leads:", error);
-//         }
-//       };
-
-//     const handleUpdate = async (lead) =>  {
-
-//         setCurrentLead(lead);
-//         console.log(lead);
-
-//         try {
-//           // Send updated data to the backend using Axios
-//           const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/updateLeadStatus/${currentLead.lead_id}`, currentLead);
-
-//           if (response.status === 200) {
-//             console.log('Updated successfully:', response.data);
-//             cogoToast.success("Lead status updated successfully");
-
-//             navigate(`/employee-lead-single-data/${currentLead.lead_id}`)
-//           } else {
-//             console.error('Error updating:', response.data);
-//             cogoToast.error({ general: 'Failed to update the lead status.' });
-//           }
-//         } catch (error) {
-//           console.error('Request failed:', error);
-//           cogoToast.error('Failed to update the lead status.');
-//         }
-
-//     };
-
-//     useEffect(() => {
-//       fetchLeads();
-//     }, [])
-
-//     return (
-//         <>
-//             <MainHeader />
-//             <EmployeeSider />
-//             <div className="container mt-16">
-//                 <h1 className="text-2xl text-center mt-[2rem]">Assigned Employee Leads</h1>
-//                 <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
-
-//                 {/* Button to create a new lead */}
-//                 {/* <div className="mb-4">
-//                     <button
-//                         className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
-//                         onClick={handleCreateClick}
-//                     >
-//                         Add Lead
-//                     </button>
-//                 </div> */}
-
-//                 <div className="overflow-x-auto mt-4">
-//                     <table className="min-w-full bg-white border">
-//                         <thead>
-//                             <tr>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">S.no</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Lead Number</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Assigned To</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Created Time</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Name</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Phone</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Lead Source</th>
-//                                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Action</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody>
-//                             {leads.map((lead, index) => (
-//                                 <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{index + 1}</td>
-//                                     <Link to={`/employee-lead-single-data/${lead.lead_id}`}>
-//                                     <td className="px-6 py-4 border-b border-gray-200  underline text-[blue]">{lead.lead_no}</td>
-//                                     </Link>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{moment(lead.createdTime).format('DD/MM/YYYY')}</td>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.name}</td>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.phone}</td>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.leadSource}</td>
-//                                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-//                                         <button
-//                                             className="text-blue-500 hover:text-blue-700"
-//                                             onClick={() => handleUpdate(lead)}>
-//                                             Start Work
-//                                         </button>
-//                                     </td>
-//                                 </tr>
-//                             ))}
-//                         </tbody>
-//                     </table>
-//                 </div>
-
-//             </div>
-//         </>
-//     );
-// }
-
-// export default EmployeeLead;
 
 import React, { useState, useEffect } from "react";
 import moment from "moment";
@@ -154,15 +20,27 @@ function EmployeeLead() {
   const [filterDate, setFilterDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [leadSourceFilter, setLeadSourceFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [visitFilter, setVisitFilter] = useState("");
+  const [dealFilter, setDealFilter] = useState("");
+  const [leadStatusFilter, setLeadStatusFilter] = useState("");
+  const [leadnotInterestedStatusFilter, setLeadnotInterestedStatusFilter] = useState("");
+  const [meetingStatusFilter, setMeetingStatusFilter] = useState("");
+  const [monthFilter, setMonthFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc"); 
+
+
 
   const [endDate, setEndDate] = useState("");
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage] = useState(10);
+  const [leadsPerPage, setLeadsPerPage] = useState(10);
 
   const navigate = useNavigate();
 
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const EmpId = useSelector((state) => state.auth.user);
+
+  const token = EmpId?.token;
 
   // Fetch leads from the API
   useEffect(() => {
@@ -172,7 +50,12 @@ function EmployeeLead() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId}`
+        `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       const data = response.data;
       console.log(data);
@@ -187,8 +70,8 @@ function EmployeeLead() {
     try {
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyLeadStatus/${lead.lead_id}`,
-        { lead_status: "in progress" }
+        `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
+        { lead_status: "active lead" }
       );
 
       if (response.status === 200) {
@@ -204,19 +87,30 @@ function EmployeeLead() {
       cogoToast.error("Failed to update the lead status.");
     }
   };
-  useEffect(() => {
-    let filtered = leads;
 
-    // Filter by search term
-    if (searchTerm) {
-      const trimmedSearchTerm = searchTerm.toLowerCase().trim(); // Normalize the search term
-      filtered = filtered.filter((lead) =>
-        ["name", "lead_no", "leadSource","phone"].some((key) =>
-          lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
-        )
-      );
-    }
 
+  const applyFilters = () => {
+    let filtered = [...leads];
+  
+    // Sort by date
+    filtered = filtered.sort((a, b) => {
+      if (sortOrder === "asc") {
+        return new Date(a.createdTime) - new Date(b.createdTime);
+      } else {
+        return new Date(b.createdTime) - new Date(a.createdTime);
+      }
+    });
+  
+ // Filter by search term
+ if (searchTerm) {
+  const trimmedSearchTerm = searchTerm.toLowerCase().trim();
+  filtered = filtered.filter((lead) =>
+    ["name", "leadSource", "phone","assignedTo"].some((key) =>
+      lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
+    )
+  );
+}
+  
     // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
@@ -224,36 +118,116 @@ function EmployeeLead() {
         return leadDate >= startDate && leadDate <= endDate;
       });
     }
-
-// Filter by lead source
-if (leadSourceFilter) {
-  filtered = filtered.filter(
-    (lead) => lead.leadSource === leadSourceFilter
-  );
-}
-
-
-
-
-    if (filterDate) {
+  
+    // Filter by lead source
+    if (leadSourceFilter) {
+      filtered = filtered.filter((lead) => lead.leadSource === leadSourceFilter);
+    }
+  
+    // Filter by status
+    if (statusFilter) {
+      filtered = filtered.filter((lead) => lead.status === statusFilter);
+    }
+  
+    // Filter by deal
+    if (dealFilter) {
+      filtered = filtered.filter((lead) => lead.deal_status === dealFilter);
+    }
+  
+    // Filter by lead status
+    if (leadStatusFilter) {
+      filtered = filtered.filter((lead) => lead.lead_status === leadStatusFilter);
+    }
+  
+    // Filter by not interested reason
+    if (leadnotInterestedStatusFilter) {
+      if (leadnotInterestedStatusFilter === "other") {
+        filtered = filtered.filter(
+          (lead) => !["price", "budget", "distance"].includes(lead.reason)
+        );
+      } else {
+        filtered = filtered.filter(
+          (lead) => lead.reason === leadnotInterestedStatusFilter
+        );
+      }
+    }
+  
+    // Filter by visit
+    if (visitFilter) {
+      filtered = filtered.filter((lead) => lead.visit === visitFilter);
+    }
+  
+    // Filter by meeting status
+    if (meetingStatusFilter) {
+      filtered = filtered.filter(
+        (lead) => lead.meeting_status === meetingStatusFilter
+      );
+    }
+  
+  
+    // Filter by month
+    if (monthFilter) {
       filtered = filtered.filter((lead) => {
-        const leadDate = moment(lead.createdTime).format("YYYY-MM-DD");
-        return leadDate === filterDate;
+        const leadMonth = moment(lead.createdTime).format("MM");
+        return leadMonth === monthFilter;
       });
     }
+  
+    return filtered;
+  };
 
+  useEffect(() => {
+    const filtered = applyFilters();
     setFilteredLeads(filtered);
-  }, [searchTerm, startDate, endDate, leads,filterDate,leadSourceFilter]);
+  }, [
+    searchTerm,
+    startDate,
+    endDate,
+    leads,
+    leadSourceFilter,
+    statusFilter,
+    visitFilter,
+    dealFilter,
+    leadStatusFilter,
+    leadnotInterestedStatusFilter,
+    meetingStatusFilter,
+    
+    monthFilter,
+    sortOrder,
+  ]);
+  
+  // Total Leads
+  const totalLeads = applyFilters().length;
+  
+  // Total Closed Leads
+  const totalClosedLeads = applyFilters().filter((lead) => lead.deal_status === "close").length;
+  
+  // Total Visits
+  const totalVisits = applyFilters().filter((lead) =>
+    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
+  ).length;
+  
+ 
+  
+  
 
   // Use filteredLeads for pagination
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = leadsPerPage === Infinity ? filteredLeads : filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
+  };
+  const handleLeadsPerPageChange = (e) => {
+    const value = e.target.value;
+    setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
+    setCurrentPage(0); // Reset to the first page
+  };
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
   return (
@@ -269,19 +243,17 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
           <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
 
           {/* Button to create a new lead */}
-
           <div className="grid max-sm:grid-cols-2 sm:grid-cols-3  lg:grid-cols-5 gap-4 mb-4">
-            <div>
-              <label htmlFor="">Search</label>
-              <input
-                type="text"
-                 placeholder=" Name,Lead No,Lead Source,Phone No"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border rounded-2xl p-2 w-full"
-              />
-            </div>
-           
+              <div>
+                <label htmlFor="">Search</label>
+                <input
+                  type="text"
+                    placeholder=" Name,Lead Source,Assigned To,Phone No"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="border rounded-2xl p-2 w-full"
+                />
+              </div>
               <div>
                 <label htmlFor="">Start Date</label>
                 <input
@@ -291,12 +263,25 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
                   className="border  rounded-2xl p-2 w-full"
                 />
               </div>
+
+              <div>
+                <label htmlFor="">End Date</label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="border   rounded-2xl p-2 w-full"
+                />
+              </div>
               <div>
                 <label htmlFor="">Lead Source Filter</label>
                 <select
                   value={leadSourceFilter}
                   onChange={(e) => setLeadSourceFilter(e.target.value)}
-                  className="border rounded-2xl p-2 w-full"
+                  
+                  className={`border rounded-2xl p-2 w-full ${
+                    leadSourceFilter ? "bg-blue-500 text-white" : "bg-white"
+                  }`}
                 >
                    <option value="">Select Lead Source</option>
                      <option value="Facebook">Facebook</option>
@@ -325,54 +310,145 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
                 </select>
               </div>
 
-              <div>
-                <label htmlFor="">End Date</label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="border   rounded-2xl p-2 w-full"
-                />
-              </div>
-              <div>
-                <label htmlFor="">Date</label>
-                <input
-                  type="date"
-                  value={filterDate}
-        onChange={(e) => setFilterDate(e.target.value)}
-                  className="border   rounded-2xl p-2 w-full"
-                />
-              </div>
+           
         
-          </div>
+             <div>
+                <label htmlFor="">Deal Filter</label>
+                <select
+                  value={dealFilter}
+                  onChange={(e) => setDealFilter(e.target.value)}
+                  className={`border rounded-2xl p-2 w-full ${
+                    dealFilter ? "bg-blue-500 text-white" : "bg-white"
+                  }`}
+                >
+                  <option value="">All Deal</option>
+                  <option value="pending">Pending</option>
+                  <option value="close">Closed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="">Lead Status</label>
+                <select
+                  value={leadStatusFilter}
+                  onChange={(e) => setLeadStatusFilter(e.target.value)}
+                  className={`border rounded-2xl p-2 w-full ${
+                    leadStatusFilter ? "bg-blue-500 text-white" : "bg-white"
+                  }`}
+                >
+                  <option value="">All Lead Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="active lead">Active Lead</option>
+                  <option value="calling done">Calling Done</option>
+                  <option value="site visit done">Site Visit Done</option>
+                  <option value="interested">Interested</option>
+                  <option value="not-interested">Not-Interested</option>
+        
+                 
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              {leadStatusFilter === "not-interested" && (
+  <div>
+  <label htmlFor="">Not Interested</label>
+  <select
+    value={leadnotInterestedStatusFilter}
+    onChange={(e) => setLeadnotInterestedStatusFilter(e.target.value)}
+    className={`border rounded-2xl p-2 w-full ${
+      leadnotInterestedStatusFilter ? "bg-blue-500 text-white" : "bg-white"
+    }`}
+  >
+    <option value="">All Not Interested</option>
+    <option value="price">Price</option>
+    <option value="budget">Budget</option>
+    <option value="distance">Distance</option>
+       <option value="other">Other</option>
+   
+   
+
+  </select>
+</div>
+
+
+              )}
+
+{leadStatusFilter === "site visit done" && (
+                    <div>
+                <label htmlFor="">Visit Filter</label>
+                <select
+                  value={visitFilter}
+                  onChange={(e) => setVisitFilter(e.target.value)}
+                  className={`border rounded-2xl p-2 w-full ${
+                    visitFilter ? "bg-blue-500 text-white" : "bg-white"
+                  }`}
+                >
+                  <option value="">All visit</option>
+                  <option value="fresh">Fresh Visit</option>
+                  <option value="re-visit">Re-Visit</option>
+                  <option value="associative">Associative Visit</option>
+                  <option value="self">Self Visit</option>
+                </select>
+              </div>
+                )}
+              <div>
+                <label htmlFor="">Meeting Status</label>
+                <select
+                  value={meetingStatusFilter}
+                  onChange={(e) => setMeetingStatusFilter(e.target.value)}
+                  className={`border rounded-2xl p-2 w-full ${
+                   meetingStatusFilter ? "bg-blue-500 text-white" : "bg-white"
+                  }`}
+                >
+                  <option value="">All Meeting Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="done by director">Done By Director</option>
+                  <option value="done by manager">Done By Manager</option>
+                 
+                </select>
+              </div>
+
+
+              <div>
+  <label htmlFor="">Month Filter</label>
+  <select
+    value={monthFilter}
+    onChange={(e) => setMonthFilter(e.target.value)}
+    className={`border rounded-2xl p-2 w-full ${
+     monthFilter ? "bg-blue-500 text-white" : "bg-white"
+    }`}
+  >
+    <option value="">All Months</option>
+    <option value="01">January</option>
+    <option value="02">February</option>
+    <option value="03">March</option>
+    <option value="04">April</option>
+    <option value="05">May</option>
+    <option value="06">June</option>
+    <option value="07">July</option>
+    <option value="08">August</option>
+    <option value="09">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+</div>
+
+            
+            </div>
           <div className="flex gap-10 text-xl font-semibold my-3 mt-5">
   {/* Total Lead Count */}
   <div>
     Total Lead:{" "}
     {
-      leads
-        .filter(
-          (lead) =>
-          
-            (!leadSourceFilter || lead.leadSource === leadSourceFilter)
-        ).length
+     totalLeads
     }
   </div>
 
   {/* Total Lead Visits */}
   <div>
-    Total Lead Visit:{" "}
+    Total Site Visit:{" "}
     {
-      leads
-        .filter(
-          (lead) =>
-           
-            (!leadSourceFilter || lead.leadSource === leadSourceFilter)
-        )
-        .filter(
-          (lead) =>
-            ["fresh", "repeated", "self", "associative"].includes(lead.visit)
-        ).length
+      totalVisits
     }
   </div>
 
@@ -380,109 +456,172 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   <div>
     Total Closed Lead:{" "}
     {
-      leads
-        .filter(
-          (lead) =>
-           
-            (!leadSourceFilter || lead.leadSource === leadSourceFilter)
-        )
-        .filter((lead) => lead.deal_status === "close").length
+     totalClosedLeads
     }
   </div>
+  <select
+            onChange={handleLeadsPerPageChange}
+            className="border rounded-2xl w-1/4"
+          
+          >
+                   <option value={10}>Number of rows: 10</option>
+           
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value="All">All</option>
+          </select>
 </div>
 
           <div className="overflow-x-auto rounded-lg shadow-md">
             <table className="min-w-full bg-white">
-              <thead>
+              
+            <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     S.no
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                    Lead Number
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Lead Id
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Name
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                   Date
-                  </th>
-                
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Phone
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Lead Source
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                    Action
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Assigned To
                   </th>
+               
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Lead Status
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Visit
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Reason
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Deal Status
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Meeting Status
+                  </th>
+                 
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Remark Status
+                  </th>
+                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Answer Remark
+                  </th>
+                
+                  <th
+  className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left cursor-pointer"
+  onClick={toggleSortOrder}
+>
+  Assigned Date
+  <span>{sortOrder === "asc" ? "▲" : "▼" }</span>
+</th>
+            <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                    Action
+                  </th>      
+               
                 </tr>
               </thead>
+
               <tbody>
   {currentLeads.length > 0 ? (
     currentLeads.map((lead, index) => (
+
       <tr
         key={lead.id}
         className={index % 2 === 0 ? "bg-gray-100" : ""}
       >
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {index + 1}
+        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+        {leadsPerPage === Infinity ? index + 1 : index + 1 + currentPage * leadsPerPage}
         </td>
-        <td className="px-6 py-4 border-b border-gray-200 underline text-[blue]">
+        <td className="px-6 py-4 border-b border-gray-200 underline font-semibold text-[blue]">
           <Link to={`/employee-lead-single-data/${lead.lead_id}`}>
-            {lead.lead_no}
+            {lead.lead_id}
           </Link>
         </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.status}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
-        </td>
-     
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.phone}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.leadSource}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_status === "in progress" ? (
-            <button
-              className="text-[green] font-semibold hover:text-blue-700"
-              onClick={() => handleUpdate(lead)}
-            >
-              Started Work
-            </button>
-          ) : lead.lead_status === "pending" ? (
-            <button
-              className="text-blue-500 font-semibold hover:text-blue-700"
-              onClick={() => handleUpdate(lead)}
-            >
-              Start Work
-            </button>
-          ) : (
-            <button
-              className="text-gray-400 font-semibold cursor-not-allowed"
-              disabled
-            >
-              Work Completed
-            </button>
-          )}
+         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                        {lead.name}
+                      </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                        {lead.phone}
+                      </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                        {lead.leadSource}
+                      </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                        {lead.assignedTo}
+                      </td>
+                    
+                    
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          {lead.lead_status}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          {lead.visit}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          {lead.reason}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          {lead.deal_status}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          {lead.meeting_status}
+                        </td>
+                    
+                     
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                        {lead.remark_status}
+                      </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold  text-wrap" >
+                        {lead.answer_remark}
+                        
+                                       
+                      </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                        {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
+                      </td>
+        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+        {lead.lead_status === "active lead" || lead.lead_status === "calling done" || lead.lead_status === "site visit done" || lead.lead_status === "interested" || lead.lead_status === "not-interested"  ?  (
+  <button
+    className="text-[green] font-semibold hover:text-blue-700"
+    onClick={() => handleUpdate(lead)}
+  >
+    Started Work
+  </button>
+) : lead.lead_status === "pending" ? (
+  <button
+    className="text-blue-500 font-semibold hover:text-blue-700"
+    onClick={() => handleUpdate(lead)}
+  >
+   Not Start Work
+  </button>
+) : lead.lead_status === "completed" ? (
+  <button
+    className="text-gray-400 font-semibold cursor-not-allowed"
+    disabled
+  >
+    Work Completed
+  </button>
+) : null}
+
         </td>
       </tr>
     ))
   ) : (
     <tr>
       <td
-        colSpan="8"
+        colSpan="12"
         className="text-center py-4 text-gray-500"
       >
         No Data Available

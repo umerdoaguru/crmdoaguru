@@ -21,23 +21,28 @@ const {
   deleteFollow_Up,
   createFollow_Up,
   getEmployeeFollow_Up,
-  updateOnlyFollowUpStatus,
+  updateOnlyFollowUpStatus,createRemark,updateRemark,deleteRemark,getEmployeeRemark,
+  updateOnlyRemarkStatus,
+  updateOnlyRemarkAnswer,
+  updateOnlyRemarkAnswerStatus
 } = require("../controllers/employeController");
+const authenticateEmployee = require("../Middleware/authenticateEmployee");
+const { getleadbyid } = require("../controllers/UserController");
 const router = express.Router();
 
-router.get("/get-employee-invoice/:id", getEmployeeInvoice);
-router.get("/employeeProfile/:id", employeeProfile);
-router.get("/employe-leads/:id", getEmployeeLeads);
-router.get("/employebyid-visit/:id", getEmployeebyidvisit);
-router.get("/employe-all-visit", AllgetEmployeebyvisit);
+router.get("/get-employee-invoice/:id",authenticateEmployee, getEmployeeInvoice);
+router.get("/employeeProfile/:id",authenticateEmployee, employeeProfile);
+router.get("/employe-leads/:id",authenticateEmployee, getEmployeeLeads);
+router.get("/employebyid-visit/:id",authenticateEmployee, getEmployeebyidvisit);
+router.get("/employe-all-visit",authenticateEmployee, AllgetEmployeebyvisit);
 router.put("/updateVisitStatus/:id", updateOnlyVisitStatus);
 
-router.get("/employe-visit/:id", getEmployeeVisit);
+router.get("/employe-visit/:id",authenticateEmployee, getEmployeeVisit);
 router.put('/employe-visit', updateVisit);           
 router.delete('/employe-visit/:id', deleteVisit); 
 router.post("/employe-visit", createVisit);
 
-router.get("/employe-follow-up/:id", getEmployeeFollow_Up);
+router.get("/employe-follow-up/:id",authenticateEmployee, getEmployeeFollow_Up);
 router.put('/employe-follow-up', updateFollow_Up);           
 router.delete('/employe-follow-up/:id', deleteFollow_Up); 
 router.post("/employe-follow-up", createFollow_Up);
@@ -48,8 +53,28 @@ router.put("/updateOnlyFollowUpStatus/:id", updateOnlyFollowUpStatus);
 router.put("/updateLeadStatus/:id", updateLeadStatus);
 router.put("/updateOnlyLeadStatus/:id", updateOnlyLeadStatus);
 router.put("/updateOnlyQuotationStatus/:id", updateOnlyQuotationStatus);
-router.get("/get-quotation-byEmploye/:id", getEmployeeQuotation);
-router.get("/get-quotation-byLead/:id", getLeadQuotation);
-router.get("/getAllEmployee-Toal-lead", getAllEmployeeTotalLeads);
+router.get("/get-quotation-byEmploye/:id",authenticateEmployee, getEmployeeQuotation);
+router.get("/get-quotation-byLead/:id",authenticateEmployee, getLeadQuotation);
+router.get("/getAllEmployee-Toal-lead",authenticateEmployee, getAllEmployeeTotalLeads);
+
+
+
+
+
+router.post("/remarks", createRemark);
+
+
+router.put("/remarks", updateRemark);
+
+
+router.delete("/remarks/:id", deleteRemark);
+
+
+router.get("/remarks/:id",authenticateEmployee, getEmployeeRemark);
+
+router.put("/updateOnlyRemarkStatus/:id", updateOnlyRemarkStatus);
+router.put("/updateOnlyRemarkAnswerStatus/:id", updateOnlyRemarkAnswerStatus);
+router.put("/updateOnlyAnswerRemark", updateOnlyRemarkAnswer);
+router.get("/leads-employee/:id",authenticateEmployee, getleadbyid);
 
 module.exports = router;

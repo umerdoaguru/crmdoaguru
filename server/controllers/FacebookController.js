@@ -106,8 +106,12 @@ const fetchLeads = async (req, res) => {
     try {
       // Fetch leads from Meta API
       const response = await axios.get(`https://graph.facebook.com/v20.0/${formId}?fields=name,leads&access_token=${ACCESS_TOKEN}`);
+      console.log(response.data, "sdfs data");
+      
   
       const leads = response.data.leads?.data || [];
+      
+      
   
       // Save the leads to the database
       for (const lead of leads) {
@@ -146,10 +150,12 @@ const fetchLeads = async (req, res) => {
       }
   
       res.status(200).json({ message: 'Leads fetched and saved successfully', leads });
+    
     } catch (err) {
       console.error('Error fetching leads from Meta API:', err);
       res.status(500).json({ error: 'Failed to fetch leads from Meta API' });
     }
+  
   };
 
 // Fetch leads for a specific form ID
