@@ -764,12 +764,7 @@ console.log(totalVisit);
           <div className="flex flex-wrap justify-between gap-4 p-4">
   {/* Left Section for Creation Buttons */}
   <div className="flex flex-wrap gap-2">
-    <button
-      onClick={() => handleQuotation(leads[0])}
-      className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-    >
-      Quotation Creation
-    </button>
+   
     <button
       className="bg-orange-500 text-white px-4 py-2 rounded w-full sm:w-auto"
       onClick={handleCreateClick}
@@ -792,19 +787,8 @@ console.log(totalVisit);
 
   {/* Right Section for View Buttons */}
   <div className="flex flex-wrap gap-2">
-    {/* Quotation */}
-    {quotationCreated ? (
-      <button
-        onClick={() => handleViewQuotation(leads[0])}
-        className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-      >
-        View Quotation
-      </button>
-    ) : (
-      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
-        Quotation not yet created
-      </p>
-    )}
+
+   
 
     {/* Visit */}
     {visitCreated ? (

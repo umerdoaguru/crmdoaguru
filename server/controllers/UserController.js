@@ -829,6 +829,17 @@ const createLead = (req, res) => {
     actual_date,
     assignedBy,
   } = req.body;
+  console.log(lead_no,
+    name,
+    phone,
+    assignedTo,
+    leadSource,
+    employeeId,
+    subject,address,
+    createdTime,
+    actual_date,
+    assignedBy,);
+  
   const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy) VALUES (?,?,?,?,?,?, ?, ?, ?, ?,?)`;
   db.query(
     sql,

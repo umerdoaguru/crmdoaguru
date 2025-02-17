@@ -250,6 +250,7 @@ const adminLogin = async (req, res) => {
           email: user.email,
           roles: user.roles,
           token: token,
+          phone: user.phone,
         },
       });
     });

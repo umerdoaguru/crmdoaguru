@@ -14,6 +14,25 @@ import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 
 function EmployeeLead() {
+const [currentLead, setCurrentLead] = useState({
+    lead_no: "",
+    assignedTo: "",
+    employeeId: "",
+    employeephone: "",
+    createdTime: "", // Added here
+    name: "",
+    phone: "",
+    leadSource: "",
+    subject: "",
+    address: "",
+    actual_date: "",
+   
+  });
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [loading , setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [customLeadSource, setCustomLeadSource] = useState("");  
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +47,7 @@ function EmployeeLead() {
   const [meetingStatusFilter, setMeetingStatusFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); 
-
+  const [employees, setEmployees] = useState([]);
 
 
   const [endDate, setEndDate] = useState("");
@@ -45,6 +64,7 @@ function EmployeeLead() {
   // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
+    fetchEmployees();
   }, []);
   
   const fetchLeads = async () => {
@@ -62,6 +82,19 @@ function EmployeeLead() {
       setLeads(data.reverse()); // Reverse the data here
     } catch (error) {
       console.error("Error fetching leads:", error);
+    }
+  };
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get("https://crm.dentalguru.software/api/employeeself",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }});
+      setEmployees(response.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
     }
   };
   
@@ -88,6 +121,146 @@ function EmployeeLead() {
     }
   };
 
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
+  
+    if (!currentLead.lead_no) {
+      formErrors.lead_no = "Lead number is required";
+      isValid = false;
+    }
+  
+    if (!currentLead.assignedTo) {
+      formErrors.assignedTo = "Assigned To field is required";
+      isValid = false;
+    }
+  
+    if (!currentLead.name) {
+      formErrors.name = "Name is required";
+      isValid = false;
+    }
+    if (!currentLead.createdTime) {
+      formErrors.createdTime = "Date is required";
+      isValid = false;
+    }
+  
+    if (!currentLead.phone) {
+      formErrors.phone = "Phone number is required";
+      isValid = false;
+    } else if (!/^\d{10}$/.test(currentLead.phone)) {
+      formErrors.phone = "Phone number must be 10 digits";
+      isValid = false;
+    }
+  
+    if (!currentLead.leadSource) {
+      formErrors.leadSource = "Lead Source is required";
+      isValid = false;
+    }
+    if (!currentLead.subject) {
+      formErrors.subject = "Subject is required";
+      isValid = false;
+    }
+    if (!currentLead.address) {
+      formErrors.address = "Address is required";
+      isValid = false;
+    }
+  
+    setErrors(formErrors);
+    return isValid;
+  };
+  
+  const handleInputChangelead = (e) => {
+    const { name, value } = e.target;
+    setCurrentLead((prevLead) => {
+      const updatedLead = { ...prevLead, [name]: value };
+  
+      // If createdTime changes, update actual_date accordingly
+      if (name === "createdTime") {
+        updatedLead.actual_date = value; // Copy createdTime to actual_date
+      }
+  
+      // If assignedTo changes, update employeeId and employeephone accordingly
+      if (name === "assignedTo") {
+        const selectedEmployee = employees.find(
+          (employee) => employee.name === value
+        );
+        if (selectedEmployee) {
+          updatedLead.employeeId = selectedEmployee.employeeId;
+          updatedLead.employeephone = selectedEmployee.phone; // Store employee's phone number in employeephone
+        } else {
+          updatedLead.employeeId = ""; // Reset if no match
+          updatedLead.employeephone = ""; // Reset employeephone if no match
+        }
+      }
+  
+      return updatedLead;
+    });
+  };
+  
+  const handleCreateClick = () => {
+    
+    setCurrentLead({
+      lead_no: "",
+      assignedTo: "",
+      employeeId: "",
+      employeephone: "",
+      name: "",
+      phone: "",
+      leadSource: "",
+      createdTime: "", // Clear out createdTime for new lead
+      subject: "",
+      address: "",
+      actual_date: "",
+     
+    });
+    setShowPopup(true);
+  };
+  
+  const handleCustomLeadSourceChange = (e) => {
+    setCustomLeadSource(e.target.value);
+  };
+  
+  
+  const saveChanges = async () => {
+    if (validateForm()) {
+      // Use custom lead source if "Other" is selected
+      const leadData = {
+        ...currentLead,
+        leadSource:
+          currentLead.leadSource === "Other"
+            ? customLeadSource
+            : currentLead.leadSource,
+             assignedBy: "Super Admin"
+      };
+  
+      try {
+        setLoading(true)
+      
+       
+          // Create new lead
+          await axios.post("https://crm.dentalguru.software/api/leads", leadData);
+  
+          // Construct WhatsApp message link with encoded parameters
+          const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Lead%20No.%20${currentLead.lead_no}%0A2)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Project:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+  
+          // Open WhatsApp link in a new tab
+          window.open(whatsappLink, "_blank");
+        fetchLeads();
+          closePopup();
+       
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+        console.error("Error saving lead:", error);
+      }
+    }
+  };
+  
+  const closePopup = () => {
+    setShowPopup(false);
+    setErrors({});
+  };
+  
 
   const applyFilters = () => {
     let filtered = [...leads];
@@ -236,12 +409,20 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
       <EmployeeSider />
       {/* <div className=" container"> */}
       <div className="flex flex-col  2xl:ml-44 ">
+
         <div className="flex-grow p-4 mt-14 lg:mt-5  sm:ml-0">
           <center className="text-2xl text-center mt-8 font-medium">
             Assigned Employee Leads
           </center>
           <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
-
+ <div className="mb-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium"
+                onClick={handleCreateClick}
+              >
+                Add Lead
+              </button>
+            </div>
           {/* Button to create a new lead */}
           <div className="grid max-sm:grid-cols-2 sm:grid-cols-3  lg:grid-cols-5 gap-4 mb-4">
               <div>
@@ -654,6 +835,193 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
             />
           </div>
         </div>
+        
+        {showPopup && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg h-[95%] overflow-y-auto">
+                <h2 className="text-xl mb-4">
+                  {"Add Lead"}
+                </h2>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Lead Number</label>
+                  <input
+                    type="number"
+                    name="lead_no"
+                    value={currentLead.lead_no}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.lead_no ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                  {errors.lead_no && (
+                    <span className="text-red-500">{errors.lead_no}</span>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Assigned To</label>
+                  <select
+                    name="assignedTo"
+                    value={currentLead.assignedTo}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.assignedTo ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((employee) => (
+                      <option key={employee.employee_id} value={employee.name}>
+                        {employee.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.assignedTo && (
+                    <span className="text-red-500">{errors.assignedTo}</span>
+                  )}
+                </div>
+
+                {/* Hidden employeeId field */}
+                <input
+                  type="hidden"
+                  id="employeeId"
+                  name="employeeId"
+                  value={currentLead.employeeId}
+                />
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Assign Date</label>
+                  <input
+                    type="date"
+                    name="createdTime"
+                    value={currentLead.createdTime}
+                    onChange={handleInputChangelead}
+                    className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                  />
+                  {errors.createdTime && (
+                    <span className="text-red-500">{errors.createdTime}</span>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={currentLead.name}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.name ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                  {errors.name && (
+                    <span className="text-red-500">{errors.name}</span>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Phone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={currentLead.phone}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.phone ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                  {errors.phone && (
+                    <span className="text-red-500">{errors.phone}</span>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Lead Source</label>
+                  <select
+                    name="leadSource"
+                    id="leadSource"
+                    value={currentLead.leadSource}
+                    onChange={handleInputChangelead}
+                    className="w-full p-2 border rounded"
+                  >
+                    <option value="">Select Lead Source</option>
+
+                    <option value="Referrals">Referrals</option>
+                    <option value="Cold Calling">Cold Calling</option>
+                    <option value="Email Campaigns">Email Campaigns</option>
+                    <option value="Networking Events">Networking Events</option>
+                    <option value="Paid Advertising">Paid Advertising</option>
+                    <option value="Content Marketing">Content Marketing</option>
+                    <option value="SEO">Search Engine Optimization</option>
+                    <option value="Trade Shows">Trade Shows</option>
+
+                    <option value="Affiliate Marketing">
+                      Affiliate Marketing
+                    </option>
+                    <option value="Direct Mail">Direct Mail</option>
+                    <option value="Online Directories">
+                      Online Directories
+                    </option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {currentLead.leadSource === "Other" && (
+                    <input
+                      type="text"
+                      value={customLeadSource}
+                      onChange={handleCustomLeadSourceChange}
+                      placeholder="Enter custom lead source"
+                      className="mt-2 w-full px-3 py-2 border border-gray-300 rounded"
+                    />
+                  )}
+                  {errors.leadSource && (
+                    <p className="text-red-500 text-xs">{errors.leadSource}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Project</label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={currentLead.subject}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.subject ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                  {errors.subject && (
+                    <span className="text-red-500">{errors.subject}</span>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={currentLead.address}
+                    onChange={handleInputChangelead}
+                    className={`w-full px-3 py-2 border ${
+                      errors.address ? "border-red-500" : "border-gray-300"
+                    } rounded`}
+                  />
+                  {errors.address && (
+                    <span className="text-red-500">{errors.address}</span>
+                  )}
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                    onClick={saveChanges} disabled = {loading}
+                  >
+                       {loading ? 'Save...' : 'Save'}
+                  </button>
+                  <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                    onClick={closePopup}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
       </div>
       {/* </div> */}
     </>

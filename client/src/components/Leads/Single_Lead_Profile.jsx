@@ -231,19 +231,7 @@ function Single_Lead_Profile() {
         <div className="">
               {/* Conditionally render the View Quotation button */}
               <div className="flex">
-                {quotationCreated ? (
-                  <button
-                    onClick={() => handleViewQuotation(leads[0])}
-                    className="bg-blue-500 text-white px-4 py-2 mx-1 rounded"
-                  >
-                    View Quotation
-                  </button>
-                ) : (
-                  <p className="text-white bg-red-400 text-center px-4 py-2 mx-1 rounded">
-                    Quotation not yet created
-                  </p>
-                )}
-
+               
                 {/* Conditionally render the View Quotation button */}
                 {visitCreated ? (
                   <button

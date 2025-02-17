@@ -154,31 +154,48 @@ function Leads() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+  
     setCurrentLead((prevLead) => {
       const updatedLead = { ...prevLead, [name]: value };
-
+  
       // If createdTime changes, update actual_date accordingly
       if (name === "createdTime") {
-        updatedLead.actual_date = value; // Copy createdTime to actual_date
+        updatedLead.actual_date = value;
       }
-
+  
       // If assignedTo changes, update employeeId and employeephone accordingly
       if (name === "assignedTo") {
-        const selectedEmployee = employees.find(
-          (employee) => employee.name === value
-        );
-        if (selectedEmployee) {
-          updatedLead.employeeId = selectedEmployee.employeeId;
-          updatedLead.employeephone = selectedEmployee.phone; // Store employee's phone number in employeephone
+        if (value === `Assign by Admin ${adminuser.name}`) {
+          // Define the admin assignment text
+          const adminAssignText = `Assign by Admin ${adminuser.name}`;
+          console.log(adminAssignText);
+      
+          // Assign admin details
+          updatedLead.employeeId = adminuser.id;
+          updatedLead.assignedTo = adminAssignText;
+          updatedLead.employeephone = adminuser.phone // Ensure phone doesn't cause issues if undefined
         } else {
-          updatedLead.employeeId = ""; // Reset if no match
-          updatedLead.employeephone = ""; // Reset employeephone if no match
+          // If an employee is selected
+          const selectedEmployee = employees.find(
+            (employee) => employee.name === value
+          );
+      
+          if (selectedEmployee) {
+            updatedLead.employeeId = selectedEmployee.employeeId;
+            updatedLead.employeephone = selectedEmployee.phone;
+          } else {
+            // Reset values if no match
+            updatedLead.employeeId = "";
+            updatedLead.employeephone = "";
+          }
         }
       }
-
-      return updatedLead;
+      
+  
+      return updatedLead; // Ensure the updated object is returned properly
     });
   };
+  
 
   const handleCreateClick = () => {
     setIsEditing(false);
@@ -716,6 +733,7 @@ const toggleSortOrder = () => {
                       {employee.name}
                     </option>
                   ))}
+                   <option value={`Assign by Admin ${adminuser.name}`}>Assigned By Admin {adminuser.name}</option>
                 </select>
               </div>
             
@@ -896,12 +914,7 @@ const toggleSortOrder = () => {
                         >
                           <BsPencilSquare size={20} />
                         </button>
-                        <button
-                          className="text-red-500 hover:text-red-700 mx-2"
-                          onClick={() => handleDeleteClick(lead.lead_id)}
-                        >
-                          <BsTrash size={20} />
-                        </button>
+                      
                       </td>
                     
                      
@@ -955,26 +968,33 @@ const toggleSortOrder = () => {
                   )}
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Assigned To</label>
-                  <select
-                    name="assignedTo"
-                    value={currentLead.assignedTo}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.assignedTo ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  >
-                    <option value="">Select Employee</option>
-                    {employees.map((employee) => (
-                      <option key={employee.employee_id} value={employee.name}>
-                        {employee.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.assignedTo && (
-                    <span className="text-red-500">{errors.assignedTo}</span>
-                  )}
-                </div>
+  <label className="block text-gray-700">Assigned To</label>
+  <select
+    name="assignedTo"
+    value={currentLead.assignedTo}
+    onChange={handleInputChange}
+    className={`w-full px-3 py-2 border ${
+      errors.assignedTo ? "border-red-500" : "border-gray-300"
+    } rounded`}
+  >
+    <option value="">Select Employee</option>
+    {employees.map((employee) => (
+      <option key={employee.employee_id} value={employee.name}>
+        {employee.name}
+      </option>
+    ))}
+    {/* Ensure adminuser exists before rendering */}
+    {adminuser && (
+      <option value={`Assign by Admin ${adminuser.name}`}>
+       Assign By Admin {adminuser.name}
+      </option>
+    )}
+  </select>
+  {errors.assignedTo && (
+    <span className="text-red-500">{errors.assignedTo}</span>
+  )}
+</div>
+
 
                 {/* Hidden employeeId field */}
                 <input

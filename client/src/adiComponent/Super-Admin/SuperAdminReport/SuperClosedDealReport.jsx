@@ -47,11 +47,12 @@ const SuperClosedDealReport = () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-
+  const [admins, setAdmins] = useState([]);
   // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
+    fetchAdmins();
   }, []);
 
   const fetchLeads = async () => {
@@ -87,6 +88,23 @@ const SuperClosedDealReport = () => {
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
+    }
+  };
+  const fetchAdmins = async () => {
+    try {
+      const response = await axios.get(
+        "https://crm.dentalguru.software/api/getAllAdmins",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
+      );
+      const admins = response.data.admins;
+      setAdmins(admins || []);
+      console.log("Admins fetched successfully", admins);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
     }
   };
 
@@ -226,6 +244,11 @@ const SuperClosedDealReport = () => {
                     {employee.name}
                   </option>
                 ))}
+                 {admins.map((admin) => (
+                    <option key={admin.admin_id} value={`Assign by Admin ${admin.name}`}>
+                    Assigned By Admin {admin.name}
+                    </option>
+                  ))}
               </select>
             </div>
             <div>

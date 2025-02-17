@@ -11,6 +11,7 @@ import SuperAdminSider from "./SuperAdminSider";
 import cogoToast from "cogo-toast";
 import Super_Single_Lead_Profile from "./Super_Single_Lead_Profile";
 import { useSelector } from "react-redux";
+import { BsTrash } from "react-icons/bs";
 
 function SuperEmployeeLeads() {  
   const [leads, setLeads] = useState([]);
@@ -40,7 +41,7 @@ function SuperEmployeeLeads() {
   const [sortOrder, setSortOrder] = useState("asc"); 
 
   const [activeDropdown, setActiveDropdown] = useState("");
-
+ const [admins, setAdmins] = useState([]);
   
 
 
@@ -77,6 +78,7 @@ function SuperEmployeeLeads() {
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
+    fetchAdmins();
     // fetchVisit();
   }, []);
 
@@ -113,6 +115,24 @@ function SuperEmployeeLeads() {
       console.error("Error fetching employees:", error);
     }
   };
+    // Fetch all admins from the backend
+    const fetchAdmins = async () => {
+      try {
+        const response = await axios.get(
+          "https://crm.dentalguru.software/api/getAllAdmins",
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }}
+        );
+        const admins = response.data.admins;
+        setAdmins(admins || []);
+        console.log("Admins fetched successfully", admins);
+      } catch (error) {
+        console.error("Error fetching admins:", error);
+      }
+    };
 
   const handleInputChange = (e) => {
     setModalData({
@@ -419,7 +439,19 @@ const closePopup = () => {
   setShowPopup(false);
   setErrors({});
 };
-
+const handleDeleteClick = async (id) => {
+  const isConfirmed = window.confirm(
+    "Are you sure you want to delete this data?"
+  );
+  if (isConfirmed) {
+    try {
+      await axios.delete(`https://crm.dentalguru.software/api/leads/${id}`);
+      fetchLeads(); // Refresh the list after deletion
+    } catch (error) {
+      console.error("Error deleting lead:", error);
+    }
+  }
+};
 
 
 
@@ -698,6 +730,12 @@ const closeModalLead = () => {
                       {employee.name}
                     </option>
                   ))}
+                  {admins.map((admin) => (
+                    <option key={admin.admin_id} value={`Assign by Admin ${admin.name}`}>
+                    Assigned By Admin {admin.name}
+                    </option>
+                  ))}
+                  
                 </select>
               </div>
             
@@ -789,6 +827,7 @@ const closeModalLead = () => {
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Answer Remark
                   </th>
+                
                   <th
   className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left cursor-pointer"
   onClick={toggleSortOrder}
@@ -796,7 +835,9 @@ const closeModalLead = () => {
   Assigned Date
   <span>{sortOrder === "asc" ? "▲" : "▼" }</span>
 </th>
-
+<th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+            Action
+                  </th>
                 
                 
                
@@ -860,6 +901,15 @@ const closeModalLead = () => {
         </td>
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
           {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+        <button
+                          className="text-red-500 hover:text-red-700 mx-2"
+                          onClick={() => handleDeleteClick(lead.lead_id)}
+                        >
+                          <BsTrash size={20} />
+                        </button>
+
         </td>
       
       

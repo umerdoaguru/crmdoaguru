@@ -81,8 +81,20 @@ const Sider = () => {
                   </h3>
                 </Link>
               </li>
+              
+                          <hr className="w-full border-gray-400" />
+              
+                          <li className={`xl:w-full ${getSidebarClass("/admin-leads")}`}>
+                            <Link to="/admin-leads" className="flex flex-col items-center py-3">
+                              <FaHistory className="text-white text-2xl md:text-3xl" />
+                              <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base mx-3">
+                              Assigned <br /> <span>Leads</span>
+                              </h3>
+                            </Link>
+                          </li>
 
             <hr className="w-full border-gray-400" />
+            
 
             <li className={`xl:w-full ${getSidebarClass("/admin-report")}`}>
               <Link to="/admin-report" className="flex flex-col items-center py-3">

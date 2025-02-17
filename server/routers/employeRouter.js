@@ -27,7 +27,7 @@ const {
   updateOnlyRemarkAnswerStatus
 } = require("../controllers/employeController");
 const authenticateEmployee = require("../Middleware/authenticateEmployee");
-const { getleadbyid } = require("../controllers/UserController");
+const { getleadbyid, employeeData } = require("../controllers/UserController");
 const router = express.Router();
 
 router.get("/get-employee-invoice/:id",authenticateEmployee, getEmployeeInvoice);
@@ -76,5 +76,5 @@ router.put("/updateOnlyRemarkStatus/:id", updateOnlyRemarkStatus);
 router.put("/updateOnlyRemarkAnswerStatus/:id", updateOnlyRemarkAnswerStatus);
 router.put("/updateOnlyAnswerRemark", updateOnlyRemarkAnswer);
 router.get("/leads-employee/:id",authenticateEmployee, getleadbyid);
-
+router.get("/employeeself",authenticateEmployee, employeeData);
 module.exports = router;

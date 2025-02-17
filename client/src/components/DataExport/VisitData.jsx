@@ -42,7 +42,7 @@ const token = adminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-all-visit`,
+        `https://crm.dentalguru.software/api/employe-all-visit-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +62,11 @@ const token = adminuser.token;
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee");
+      const response = await axios.get("https://crm.dentalguru.software/api/employee" ,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      }});
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -199,6 +203,7 @@ const token = adminuser.token;
                   {employee.name}
                 </option>
               ))}
+               <option value={`Assign by Admin ${adminuser.name}`}>Admin {adminuser.name}</option>
             </select>
           </div>
           <div className="respo ">

@@ -28,6 +28,8 @@ const Overview2 = () => {
   const [visit , setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  console.log(token);
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,12 +44,13 @@ const Overview2 = () => {
         }});
       setLeads(response.data);
     } catch (error) {
-   
-      if (error?.response?.status === 401) {
-        navigate("/main_page_crm");
-        dispatch(logoutUser());
-        cogoToast.error("Token is expired Please Login Again !!");
-      }
+   if (error?.response?.status === 401) {
+           navigate("/main_page_crm");
+           dispatch(logoutUser());
+           cogoToast.error("Token is expired Please Login Again !!");
+          
+         }
+      
     }
   };
 

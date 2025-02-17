@@ -87,7 +87,7 @@ function DataExport() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-all-visit`,
+        `https://crm.dentalguru.software/api/employe-all-visit-admin`,
         {
           headers: {
             'Content-Type': 'application/json',

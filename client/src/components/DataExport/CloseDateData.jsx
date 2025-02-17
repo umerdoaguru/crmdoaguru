@@ -241,6 +241,7 @@ const CloseData = () => {
                   {employee.name}
                 </option>
               ))}
+               <option value={`Assign by Admin ${adminuser.name}`}>Admin {adminuser.name}</option>
             </select>
           </div>
           <div className="respo  ">

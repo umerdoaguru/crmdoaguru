@@ -45,6 +45,7 @@ function LeadReport() {
       ]);
     const [currentPage, setCurrentPage] = useState(0);
     const leadsPerPage = 6;
+
     const adminuser = useSelector((state) => state.auth.user);
     const token = adminuser.token;
   
@@ -212,6 +213,7 @@ function LeadReport() {
                     {employee.name}
                   </option>
                 ))}
+                  <option value={`Assign by Admin ${adminuser.name}`}>Admin {adminuser.name}</option>
               </select>
             </div>
             <div>

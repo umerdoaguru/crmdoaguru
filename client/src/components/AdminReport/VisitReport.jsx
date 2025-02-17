@@ -192,6 +192,7 @@ const VisitReport = () => {
                     {employee.name}
                   </option>
                 ))}
+                 <option value={`Assign by Admin ${adminuser.name}`}>Admin {adminuser.name}</option>
               </select>
             </div>
             <div>

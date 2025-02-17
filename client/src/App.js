@@ -25,6 +25,8 @@ import SuperAdminResetPassword from "./components/SuperAdminResetPassword";
 function App() {
   const user = useSelector((state) => state.auth.user);
   console.log(user);
+  // console.log(user.token);
+
 
   return (
     <>
