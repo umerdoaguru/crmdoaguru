@@ -933,6 +933,7 @@ const updateLead = async (req, res) => {
       name,
       phone,
       assignedTo,
+      assignedBy,
       leadSource,
       employeeId,
       createdTime,
@@ -943,7 +944,7 @@ const updateLead = async (req, res) => {
 
     // Construct SQL query to update the lead
     const sql = `UPDATE leads 
-                 SET lead_no = ?, name = ?, phone = ?, assignedTo = ?, employeeId = ?, leadSource = ?, createdTime = ?, actual_date = ?, subject = ?, address = ? 
+                 SET lead_no = ?, name = ?,  phone = ?, assignedTo = ?,assignedBy = ?,  employeeId = ?, leadSource = ?, createdTime = ?, actual_date = ?, subject = ?, address = ? 
                  WHERE lead_id = ?`;
 
     // Execute the update query asynchronously
@@ -955,6 +956,7 @@ const updateLead = async (req, res) => {
           name,
           phone,
           assignedTo,
+          assignedBy,
           employeeId,
           leadSource,
           createdTime,

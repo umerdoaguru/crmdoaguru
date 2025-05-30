@@ -29,7 +29,7 @@ function AssignedAdminLeads() {
   const [leadnotInterestedStatusFilter, setLeadnotInterestedStatusFilter] = useState("");
   const [meetingStatusFilter, setMeetingStatusFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortOrder, setSortOrder] = useState("desce"); 
   const [employees, setEmployees] = useState([]);
 
 
@@ -117,11 +117,11 @@ function AssignedAdminLeads() {
     let filtered = [...leads];
   
     // Sort by date
-    filtered = filtered.sort((a, b) => {
-      if (sortOrder === "asc") {
-        return new Date(a.createdTime) - new Date(b.createdTime);
-      } else {
+     filtered = filtered.sort((a, b) => {
+      if (sortOrder === "desce") {
         return new Date(b.createdTime) - new Date(a.createdTime);
+      } else {
+        return new Date(a.createdTime) - new Date(b.createdTime);
       }
     });
   
@@ -251,8 +251,8 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
     setCurrentPage(0); // Reset to the first page
   };
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-  };
+  setSortOrder((prevOrder) => (prevOrder === "desce" ? "asce" : "desce"));
+};
 
   return (
     <>
@@ -549,7 +549,7 @@ const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   onClick={toggleSortOrder}
 >
   Assigned Date
-  <span>{sortOrder === "asc" ? "▲" : "▼" }</span>
+  <span>{sortOrder === "desce" ? "▲" : "▼" }</span>
 </th>
             <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Action

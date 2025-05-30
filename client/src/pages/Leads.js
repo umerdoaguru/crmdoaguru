@@ -50,7 +50,7 @@ function Leads() {
   const [leadnotInterestedStatusFilter, setLeadnotInterestedStatusFilter] = useState("");
   const [meetingStatusFilter, setMeetingStatusFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortOrder, setSortOrder] = useState("desce"); 
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
 
@@ -107,6 +107,7 @@ function Leads() {
   const validateForm = () => {
     let formErrors = {};
     let isValid = true;
+
 
     if (!currentLead.lead_no) {
       formErrors.lead_no = "Lead number is required";
@@ -292,7 +293,7 @@ function Leads() {
           currentLead.leadSource === "Other"
             ? customLeadSource
             : currentLead.leadSource,
-             assignedBy: "Admin"
+             assignedBy: `Admin by ${adminuser.name}`
       };
   
       try {
@@ -348,10 +349,10 @@ function Leads() {
   
     // Sort by date
     filtered = filtered.sort((a, b) => {
-      if (sortOrder === "asc") {
-        return new Date(a.createdTime) - new Date(b.createdTime);
-      } else {
+      if (sortOrder === "desce") {
         return new Date(b.createdTime) - new Date(a.createdTime);
+      } else {
+        return new Date(a.createdTime) - new Date(b.createdTime);
       }
     });
   
@@ -503,9 +504,8 @@ const handleLeadsPerPageChange = (e) => {
   setCurrentPage(0); // Reset to the first page
 };
 const toggleSortOrder = () => {
-  setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  setSortOrder((prevOrder) => (prevOrder === "desce" ? "asce" : "desce"));
 };
-  
 
   return (
     <>
@@ -776,7 +776,7 @@ const toggleSortOrder = () => {
           </select>
 </div>
 
-          <div className=" overflow-x-auto mt-4  2xl:w-[89%]">
+          <div className=" overflow-x-auto mt-4  3xl:w-[90%] 2xl:w-[96%]">
          
 
             <table className="min-w-full bg-white border">
@@ -806,11 +806,9 @@ const toggleSortOrder = () => {
                     Lead Status
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Visit
+                    Assigned By Admin
                   </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Reason
-                  </th>
+                
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Deal Status
                   </th>
@@ -818,18 +816,13 @@ const toggleSortOrder = () => {
                     Meeting Status
                   </th>
                  
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Remark Status
-                  </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Answer Remark
-                  </th>
+                 
                   <th
   className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left cursor-pointer"
   onClick={toggleSortOrder}
 >
   Assigned Date
-  <span>{sortOrder === "asc" ? "▲" : "▼" }</span>
+  <span>{sortOrder === "desce" ? "▲" : "▼" }</span>
 </th>
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Action
@@ -883,11 +876,9 @@ const toggleSortOrder = () => {
                           {lead.lead_status}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-                          {lead.visit}
+                          {lead.assignedBy}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-                          {lead.reason}
-                        </td>
+                       
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold">
                           {lead.deal_status}
                         </td>
@@ -896,14 +887,7 @@ const toggleSortOrder = () => {
                         </td>
                     
                      
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-                        {lead.remark_status}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold  text-wrap" >
-                        {lead.answer_remark}
-                        
-                                       
-                      </td>
+                     
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
                         {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
                       </td>

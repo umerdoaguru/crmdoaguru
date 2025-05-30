@@ -51,6 +51,7 @@ import AdminProfile from "../components/AdminProfile";
 import Admin_RemarksView from "../components/Leads/Admin_RemarksView";
 import AssignedAdminLeads from "../components/Leads/AssignedAdminLeads";
 import LeadSingleProfileByAdmin from "../components/Leads/LeadSingleProfileByAdmin";
+import ImportLeadsAdmin from "../components/AdminDashBoardCards/ImportLeadsAdmin";
 
 function AdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -143,6 +144,9 @@ function AdminRoutes() {
         <Route path="/reporting" element={<Reporting />} />
         <Route path="/admin-report" element={<AdminReport />} />
         <Route path="/admin-profile" element={<AdminProfile />} />
+         <Route path="/admin-import-data" element={<ImportLeadsAdmin/>} />
+
+
       </Routes>
     </>
   );

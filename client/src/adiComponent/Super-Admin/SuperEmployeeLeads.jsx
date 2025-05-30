@@ -38,7 +38,7 @@ function SuperEmployeeLeads() {
   const [isModalOpenLeadProfile, setIsModalOpenLeadProfile] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [monthFilter, setMonthFilter] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortOrder, setSortOrder] = useState("desce"); 
 
   const [activeDropdown, setActiveDropdown] = useState("");
  const [admins, setAdmins] = useState([]);
@@ -167,11 +167,11 @@ function SuperEmployeeLeads() {
     let filtered = [...leads];
   
     // Sort by date
-    filtered = filtered.sort((a, b) => {
-      if (sortOrder === "asc") {
-        return new Date(a.createdTime) - new Date(b.createdTime);
-      } else {
+     filtered = filtered.sort((a, b) => {
+      if (sortOrder === "desce") {
         return new Date(b.createdTime) - new Date(a.createdTime);
+      } else {
+        return new Date(a.createdTime) - new Date(b.createdTime);
       }
     });
   
@@ -492,8 +492,8 @@ const closeModalLead = () => {
 
   // Toggle sort order
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-  };
+  setSortOrder((prevOrder) => (prevOrder === "desce" ? "asce" : "desce"));
+};
 
   return (
     <>
@@ -780,7 +780,7 @@ const closeModalLead = () => {
           </select>
 </div>
 
-          <div className="overflow-x-auto mt-2 2xl:w-[89%]">
+          <div className="overflow-x-auto mt-2 3xl:w-[90%] 2xl:w-[100%]">
         
 
             <table className="tt min-w-full bg-white border whitespace-nowrap">
@@ -812,7 +812,7 @@ const closeModalLead = () => {
                     Visit
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Reason
+                    Assigned By 
                   </th>
                   <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
                     Deal Status
@@ -821,19 +821,14 @@ const closeModalLead = () => {
                     Meeting Status
                   </th>
                  
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Remark Status
-                  </th>
-                  <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
-                    Answer Remark
-                  </th>
+                
                 
                   <th
   className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left cursor-pointer"
   onClick={toggleSortOrder}
 >
   Assigned Date
-  <span>{sortOrder === "asc" ? "▲" : "▼" }</span>
+  <span>{sortOrder === "desce" ? "▲" : "▼" }</span>
 </th>
 <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
             Action
@@ -881,7 +876,7 @@ const closeModalLead = () => {
             {lead.visit}
           </td>
           <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-            {lead.reason}
+            {lead.assignedBy}
           </td>
           <td className="px-6 py-4 border-b border-gray-200 font-semibold">
                           {lead.deal_status}
@@ -891,14 +886,7 @@ const closeModalLead = () => {
           </td>
       
        
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
-          {lead.remark_status}
-        </td>
-        <td className="px-6 text-[blue] underline cursor-pointer text-wrap font-semibold"  onClick={() => openModal(lead)}>
-          {lead.answer_remark}
-          
-                         
-        </td>
+      
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
           {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
         </td>
