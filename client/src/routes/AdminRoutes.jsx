@@ -131,7 +131,7 @@ function AdminRoutes() {
         />
          <Route
           path="/admin_view_remark/:id"
-          element={<Admin_RemarksView />}
+          element={<Admin_RemarksView />}   
         />
         <Route
           path="/admin_view_quotations/:id"

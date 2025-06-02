@@ -18,7 +18,8 @@ const importLeads = (req, res) => {
       employeeId,
      project,
       assignedBy,
-      assigned_date
+      assigned_date,
+    
     } = req.body;
 
     const convertExcelDate = (excelDate) => {
@@ -30,7 +31,7 @@ const importLeads = (req, res) => {
     };
 
     const values = sheetData.map((lead) => [
-      lead["Lead Number"] || null,
+     
       lead["Name"] || null,
       lead["Phone"] || null,
       assignedTo,
@@ -38,16 +39,18 @@ const importLeads = (req, res) => {
       employeeId,
       project,
       lead["Address"] || null,
+      lead["Email Id"] || null,
       assigned_date || moment().format("YYYY-MM-DD"),
       convertExcelDate(lead["Actual Date"]),
       assignedBy,
+
  
     ]);
     console.log(values);
     
 
     const sql = 
-    `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy) VALUES ?`;
+    `INSERT INTO leads ( name, phone, assignedTo, leadSource, employeeId,subject,address,email_id,createdTime,actual_date,assignedBy) VALUES ?`;
 
     db.query(sql, [values], (err, result) => {
       if (err) {

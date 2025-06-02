@@ -60,7 +60,7 @@ const EmployeeCloseGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/leads`
+        `http://localhost:9000/api/leads`
       );
       const data = response.data;
 

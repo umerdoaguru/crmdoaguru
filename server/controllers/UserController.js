@@ -818,7 +818,7 @@ const getnotes_text = (req, res) => {
 
 const createLead = (req, res) => {
   const {
-    lead_no,
+   
     name,
     phone,
     assignedTo,
@@ -828,8 +828,10 @@ const createLead = (req, res) => {
     createdTime,
     actual_date,
     assignedBy,
+    email_id
   } = req.body;
-  console.log(lead_no,
+ const email_id_value = email_id || null;
+  console.log(
     name,
     phone,
     assignedTo,
@@ -839,12 +841,14 @@ const createLead = (req, res) => {
     createdTime,
     actual_date,
     assignedBy,);
+    console.log(email_id_value);
+    
   
-  const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy) VALUES (?,?,?,?,?,?, ?, ?, ?, ?,?)`;
+  const sql = `INSERT INTO leads (name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy,email_id) VALUES (?,?,?,?,?,?, ?, ?, ?, ?,?)`;
   db.query(
     sql,
     [
-      lead_no,
+    
       name,
       phone,
       assignedTo,
@@ -853,7 +857,8 @@ const createLead = (req, res) => {
       subject,address,
       createdTime,
       actual_date,
-      assignedBy
+      assignedBy,
+      email_id_value
     ],
     (err, results) => {
       if (err) {
@@ -929,7 +934,7 @@ const updateLead = async (req, res) => {
   try {
     const { leadId } = req.params;
     const {
-      lead_no,
+     
       name,
       phone,
       assignedTo,
@@ -944,7 +949,7 @@ const updateLead = async (req, res) => {
 
     // Construct SQL query to update the lead
     const sql = `UPDATE leads 
-                 SET lead_no = ?, name = ?,  phone = ?, assignedTo = ?,assignedBy = ?,  employeeId = ?, leadSource = ?, createdTime = ?, actual_date = ?, subject = ?, address = ? 
+                 SET  name = ?,  phone = ?, assignedTo = ?,assignedBy = ?,  employeeId = ?, leadSource = ?, createdTime = ?, actual_date = ?, subject = ?, address = ? 
                  WHERE lead_id = ?`;
 
     // Execute the update query asynchronously
@@ -952,7 +957,7 @@ const updateLead = async (req, res) => {
       db.query(
         sql,
         [
-          lead_no,
+        
           name,
           phone,
           assignedTo,

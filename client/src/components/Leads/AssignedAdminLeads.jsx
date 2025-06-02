@@ -53,7 +53,7 @@ function AssignedAdminLeads() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-leads-admin/${adminuser.id}`,
+        `http://localhost:9000/api/employe-leads-admin/${adminuser.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ function AssignedAdminLeads() {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employeeself",
+      const response = await axios.get("http://localhost:9000/api/employeeself",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function AssignedAdminLeads() {
     try {
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
+        `http://localhost:9000/api/updateOnlyLeadStatus/${lead.lead_id}`,
         { lead_status: "active lead" }
       );
 

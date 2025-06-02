@@ -15,7 +15,7 @@ function Leads() {
   const [leads, setLeads] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [currentLead, setCurrentLead] = useState({
-    lead_no: "",
+  
     assignedTo: "",
     employeeId: "",
     employeephone: "",
@@ -26,6 +26,7 @@ function Leads() {
     subject: "",
     address: "",
     actual_date: "",
+    email_id:"NULL"
   });
   const [customLeadSource, setCustomLeadSource] = useState("");
 
@@ -64,7 +65,7 @@ function Leads() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        "https://crm.dentalguru.software/api/leads",
+        "http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ function Leads() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ function Leads() {
   // const fetchVisit = async () => {
   //   try {
   //     const response = await axios.get(
-  //       `https://crm.dentalguru.software/api/employe-all-visit`
+  //       `http://localhost:9000/api/employe-all-visit`
   //     );
   //     console.log(response.data);
   //     setVisit(response.data);
@@ -108,11 +109,6 @@ function Leads() {
     let formErrors = {};
     let isValid = true;
 
-
-    if (!currentLead.lead_no) {
-      formErrors.lead_no = "Lead number is required";
-      isValid = false;
-    }
 
     if (!currentLead.assignedTo) {
       formErrors.assignedTo = "Assigned To field is required";
@@ -201,7 +197,7 @@ function Leads() {
   const handleCreateClick = () => {
     setIsEditing(false);
     setCurrentLead({
-      lead_no: "",
+
       assignedTo: "",
       employeeId: "",
       employeephone: "",
@@ -212,6 +208,7 @@ function Leads() {
       subject: "",
       address: "",
       actual_date: "",
+      email_id:"",
     });
     setShowPopup(true);
   };
@@ -255,7 +252,7 @@ function Leads() {
   //     try {
   //       if (isEditing) {
   //         await axios.put(
-  //           `https://crm.dentalguru.software/api/leads/${currentLead.lead_id}`,
+  //           `http://localhost:9000/api/leads/${currentLead.lead_id}`,
   //           leadData
   //         );
   //         fetchLeads(); // Refresh the list
@@ -268,8 +265,8 @@ function Leads() {
   //        else {
   //         try {
 
-  //         await axios.post("https://crm.dentalguru.software/api/leads", leadData);
-  //         const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Lead%20No.%20${currentLead.lead_no}%0A2)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Subject:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+  //         await axios.post("http://localhost:9000/api/leads", leadData);
+  //         const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Subject:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
   //         // Open WhatsApp link
   //         window.open(whatsappLink, "_blank");
@@ -301,7 +298,7 @@ function Leads() {
         if (isEditing) {
           // Update existing lead
           await axios.put(
-            `https://crm.dentalguru.software/api/leads/${currentLead.lead_id}`,
+            `http://localhost:9000/api/leads/${currentLead.lead_id}`,
             leadData
           );
           
@@ -309,10 +306,10 @@ function Leads() {
           closePopup();
         } else {
           // Create new lead
-          await axios.post("https://crm.dentalguru.software/api/leads", leadData);
+          await axios.post("http://localhost:9000/api/leads", leadData);
   
           // Construct WhatsApp message link with encoded parameters
-          const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Lead%20No.%20${currentLead.lead_no}%0A2)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Subject:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
+          const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Subject:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
   
           // Open WhatsApp link in a new tab
           window.open(whatsappLink, "_blank");
@@ -335,7 +332,7 @@ function Leads() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://crm.dentalguru.software/api/leads/${id}`);
+        await axios.delete(`http://localhost:9000/api/leads/${id}`);
         fetchLeads(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting lead:", error);
@@ -936,72 +933,8 @@ const toggleSortOrder = () => {
                 <h2 className="text-xl mb-4">
                   {isEditing ? "Edit Lead" : "Add Lead"}
                 </h2>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Lead Number</label>
-                  <input
-                    type="number"
-                    name="lead_no"
-                    value={currentLead.lead_no}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border ${
-                      errors.lead_no ? "border-red-500" : "border-gray-300"
-                    } rounded`}
-                  />
-                  {errors.lead_no && (
-                    <span className="text-red-500">{errors.lead_no}</span>
-                  )}
-                </div>
-                <div className="mb-4">
-  <label className="block text-gray-700">Assigned To</label>
-  <select
-    name="assignedTo"
-    value={currentLead.assignedTo}
-    onChange={handleInputChange}
-    className={`w-full px-3 py-2 border ${
-      errors.assignedTo ? "border-red-500" : "border-gray-300"
-    } rounded`}
-  >
-    <option value="">Select Employee</option>
-    {employees.map((employee) => (
-      <option key={employee.employee_id} value={employee.name}>
-        {employee.name}
-      </option>
-    ))}
-    {/* Ensure adminuser exists before rendering */}
-    {adminuser && (
-      <option value={`Assign by Admin ${adminuser.name}`}>
-       Assign By Admin {adminuser.name}
-      </option>
-    )}
-  </select>
-  {errors.assignedTo && (
-    <span className="text-red-500">{errors.assignedTo}</span>
-  )}
-</div>
-
-
-                {/* Hidden employeeId field */}
-                <input
-                  type="hidden"
-                  id="employeeId"
-                  name="employeeId"
-                  value={currentLead.employeeId}
-                />
-
-                <div className="mb-4">
-                  <label className="block text-gray-700">Assign Date</label>
-                  <input
-                    type="date"
-                    name="createdTime"
-                    value={currentLead.createdTime}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
-                  />
-                  {errors.createdTime && (
-                    <span className="text-red-500">{errors.createdTime}</span>
-                  )}
-                </div>
-
+   
+              
                 <div className="mb-4">
                   <label className="block text-gray-700">Name</label>
                   <input
@@ -1074,6 +1007,70 @@ const toggleSortOrder = () => {
                     <p className="text-red-500 text-xs">{errors.leadSource}</p>
                   )}
                 </div>
+   <div className="mb-4">
+                  <label className="block text-gray-700">Email Id (Optional)</label>
+                  <input
+                    type="email"
+                    name="email_id"
+                    value={currentLead.email_id}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border  rounded`}
+                  />
+                  
+                </div>
+
+  <div className="mb-4">
+  <label className="block text-gray-700">Assigned To</label>
+  <select
+    name="assignedTo"
+    value={currentLead.assignedTo}
+    onChange={handleInputChange}
+    className={`w-full px-3 py-2 border ${
+      errors.assignedTo ? "border-red-500" : "border-gray-300"
+    } rounded`}
+  >
+    <option value="">Select Employee</option>
+    {employees.map((employee) => (
+      <option key={employee.employee_id} value={employee.name}>
+        {employee.name}
+      </option>
+    ))}
+    {/* Ensure adminuser exists before rendering */}
+    {adminuser && (
+      <option value={`Assign by Admin ${adminuser.name}`}>
+       Assign By Admin {adminuser.name}
+      </option>
+    )}
+  </select>
+  {errors.assignedTo && (
+    <span className="text-red-500">{errors.assignedTo}</span>
+  )}
+</div>
+
+
+                {/* Hidden employeeId field */}
+                <input
+                  type="hidden"
+                  id="employeeId"
+                  name="employeeId"
+                  value={currentLead.employeeId}
+                />
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Assign Date</label>
+                  <input
+                    type="date"
+                    name="createdTime"
+                    value={currentLead.createdTime}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                  />
+                  {errors.createdTime && (
+                    <span className="text-red-500">{errors.createdTime}</span>
+                  )}
+                </div>
+
+
                 <div className="mb-4">
                   <label className="block text-gray-700">Project</label>
                   <input
@@ -1104,6 +1101,7 @@ const toggleSortOrder = () => {
                     <span className="text-red-500">{errors.address}</span>
                   )}
                 </div>
+             
 
                 <div className="flex justify-end">
                   <button

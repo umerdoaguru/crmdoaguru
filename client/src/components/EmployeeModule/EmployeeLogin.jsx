@@ -22,7 +22,7 @@ function EmployeeLogin() {
     try {
       setLoading(true)
       const res = await axios.post(
-        "https://crm.dentalguru.software/api/employee-login",
+        "http://localhost:9000/api/employee-login",
         formData
       );
       if (res.data.success) {

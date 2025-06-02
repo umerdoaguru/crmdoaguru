@@ -57,7 +57,7 @@ const ClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/leads`,
+        `http://localhost:9000/api/leads`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const ClosedDealReport = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -132,11 +132,11 @@ const ClosedDealReport = () => {
   const downloadExcel = () => {
     // Map to rename keys for export
     const columnMapping = {
-      lead_no: "Lead Number",
-      assignedTo: "Assigned To",
+  
       name: "Name",
       phone: "Phone",
       leadSource: "Lead Source",
+      assignedTo: "Assigned To",
       remark_status: "Remark Status",
       answer_remark: "Answer Remark",
       meeting_status: "Meeting Status",
@@ -255,15 +255,13 @@ const ClosedDealReport = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Number
+                   <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Name
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Name
-                </th>
+            
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source

@@ -21,7 +21,7 @@ const UpdateFooterImageForm = ({ quotationId }) => {
       formData.append("file", selectedFile);
 
       const response = await axios.put(
-        `https://crm.dentalguru.software/api/footer/${quotationId}`,
+        `http://localhost:9000/api/footer/${quotationId}`,
         formData
       );
 

@@ -12,7 +12,7 @@ const UpdateNotes = () => {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(
-          `https://crm.dentalguru.software/api/notes/${id}`
+          `http://localhost:9000/api/notes/${id}`
         );
         setNotes(response.data);
       } catch (error) {
@@ -27,7 +27,7 @@ const UpdateNotes = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(`https://crm.dentalguru.software/api/notes`, {
+      const response = await axios.put(`http://localhost:9000/api/notes`, {
         notes,
       });
 

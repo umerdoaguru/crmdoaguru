@@ -21,7 +21,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://crm.dentalguru.software/api/sendOtp-employee",
+        "http://localhost:9000/api/sendOtp-employee",
         {
           email,
         }
@@ -44,7 +44,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "https://crm.dentalguru.software/api/verifyOtp-employee",
+        "http://localhost:9000/api/verifyOtp-employee",
         {
           email,
           otp,
@@ -67,7 +67,7 @@ const EmployeeResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "https://crm.dentalguru.software/api/resetPassword-employee",
+        "http://localhost:9000/api/resetPassword-employee",
         {
           email,
           password: newPassword,

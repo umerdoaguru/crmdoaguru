@@ -55,6 +55,8 @@ function SuperAdminRoutes() {
         <Route path="/super-admin-leads" element={<SuperAdminLead />} />
         <Route path="/super-admin-total-visit" element={<SuperAdminVisit />} />
         <Route path="/super-admin-total-lead" element={<SuperAdminTotalLead/>} />
+
+             
         <Route path="/super-admin-total-employee" element={<SuperAdminTotalEmployee/>} />
         <Route path="/super-admin-close-data" element={<SuperAdminTotalClosedDeal/>} />
         <Route path="/super-admin-employee-management" element={<SuperAdEmployeemanagement />} />

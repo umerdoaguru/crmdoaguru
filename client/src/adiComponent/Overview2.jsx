@@ -36,7 +36,7 @@ const Overview2 = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
+      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Overview2 = () => {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crm.dentalguru.software/api/employee-super-admin`,
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const Overview2 = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-all-visit-super-admin`,
+        `http://localhost:9000/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const Overview2 = () => {
 
   // const fetchQuotation = async () => {
   //   try {
-  //     const response = await axios.get(`https://crm.dentalguru.software/api/get-quotation-data`);
+  //     const response = await axios.get(`http://localhost:9000/api/get-quotation-data`);
   //     console.log(response.data);
   //     setQuotation(response.data.data);
   //   } catch (error) {
@@ -98,7 +98,7 @@ const Overview2 = () => {
 
   // const fetchInvoice = async () => {
   //   try {
-  //     const response = await axios.get(`https://crm.dentalguru.software/api/invoice-data`);
+  //     const response = await axios.get(`http://localhost:9000/api/invoice-data`);
   //     setInvoice(response.data);
   //   } catch (error) {
   //     console.error("Error fetching invoices:", error);

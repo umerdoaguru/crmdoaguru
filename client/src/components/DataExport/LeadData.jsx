@@ -60,7 +60,7 @@ function LeadData() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function LeadData() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ useEffect(() => {
   }
 
   // Filter by lead_status 'completed'
-  filtered = filtered.filter((lead) => lead.lead_status === "completed");
+  // filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
   setFilteredLeads(filtered);
   setCurrentPage(0); // Reset to first page on filter change
@@ -121,11 +121,11 @@ useEffect(() => {
 
 const downloadExcel = () => {
   const columnMapping = {
-    lead_no: "Lead Number",
-    assignedTo: "Assigned To",
+   
     name: "Name",
     phone: "Phone",
     leadSource: "Lead Source",
+    assignedTo: "Assigned To",
     remark_status: "Remark Status",
     answer_remark: "Answer Remark",
     meeting_status: "Meeting Status",
@@ -150,9 +150,7 @@ const downloadExcel = () => {
   };
 
   // Filter and format data for the Excel report
-  const completedLeads = filteredLeads
-    .filter((lead) => lead.lead_status === "completed")
-    .map((lead) => {
+  const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
 
       // Dynamically include selected columns
@@ -279,12 +277,12 @@ const downloadExcel = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+             
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Lead Status</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Assigned Date</th>
               </tr>
             </thead>
@@ -304,21 +302,21 @@ const downloadExcel = () => {
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
           {index + 1 + currentPage * leadsPerPage}
         </td>
+           <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+          {lead.name}
+        </td>
+
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_no}
+          {lead.phone}
+        </td>
+   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+          {lead.leadSource}
         </td>
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
           {lead.assignedTo}
         </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.phone}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.leadSource}
-        </td>
+    
+     
         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
           {lead.lead_status}
         </td>

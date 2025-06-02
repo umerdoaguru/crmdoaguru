@@ -35,7 +35,7 @@ const EmployeeSingle = () => {
   // Fetch employee data
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crm.dentalguru.software/api/getEmployeeById/${employeeId}`,
+      const response = await axios.get(`http://localhost:9000/api/getEmployeeById/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const EmployeeSingle = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get('https://crm.dentalguru.software/api/checkEmail', {
+      const response = await axios.get('http://localhost:9000/api/checkEmail', {
         params: { email },
       });
       return response.data.exists;
@@ -119,7 +119,7 @@ const EmployeeSingle = () => {
 
   const isPhoneNumberTaken = async (phone) => {
     try {
-      const response = await axios.get('https://crm.dentalguru.software/api/checkPhoneNumber', {
+      const response = await axios.get('http://localhost:9000/api/checkPhoneNumber', {
         params: { phone },
       });
       return response.data.exists;
@@ -174,11 +174,11 @@ const EmployeeSingle = () => {
 
       let response;
       if (editingIndex !== null) {
-        response = await axios.put(`https://crm.dentalguru.software/api/updateSingleEmployee/${employee.employeeId}`, formData, {
+        response = await axios.put(`http://localhost:9000/api/updateSingleEmployee/${employee.employeeId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        response = await axios.post('https://crm.dentalguru.software/api/addEmployee', formData, {
+        response = await axios.post('http://localhost:9000/api/addEmployee', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
@@ -226,7 +226,7 @@ const EmployeeSingle = () => {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`https://crm.dentalguru.software/api/deleteEmployee/${employee.employeeId}`);
+          await axios.delete(`http://localhost:9000/api/deleteEmployee/${employee.employeeId}`);
           navigate('/employee-management');
         } catch (error) {
           setError("Error deleting employee");
@@ -243,7 +243,7 @@ const EmployeeSingle = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-leads-admin/${employeeId}`,
+        `http://localhost:9000/api/employe-leads-admin/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ const EmployeeSingle = () => {
                 <div className="flex items-center mb-6">
                   {/* {employee.photo ? (
                     <img
-                      src={`https://crm.dentalguru.software/${employee.photo}`}
+                      src={`http://localhost:9000/${employee.photo}`}
                       alt="Profile"
                       className="w-24 h-24 border-2 border-gray-300 rounded-full"
                     />
@@ -334,7 +334,7 @@ const EmployeeSingle = () => {
                       Signature
                     </h4>
                     <img
-                      src={`https://crm.dentalguru.software/${employee.signature}`}
+                      src={`http://localhost:9000/${employee.signature}`}
                       alt="Signature"
                       className="w-32 h-16 border-t border-gray-300"
                     />
@@ -362,7 +362,7 @@ const EmployeeSingle = () => {
                           S.no
                         </th>
                         <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                          Lead Number
+                          Lead Id
                         </th>
                         <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                           Assigned To
@@ -392,7 +392,7 @@ const EmployeeSingle = () => {
                           </td>
                           <Link to={`/lead-single-data/${lead.lead_id}`}>
                             <td className="px-6 py-4 border-b border-gray-200  underline text-[blue]">
-                              {lead.lead_no}
+                              {lead.lead_id}
                             </td>
                           </Link>
                           <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

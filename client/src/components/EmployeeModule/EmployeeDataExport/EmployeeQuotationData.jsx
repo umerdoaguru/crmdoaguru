@@ -21,7 +21,7 @@ const EmployeeQuotationData = () => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crm.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`
+          `http://localhost:9000/api/get-quotation-byEmploye/${EmpId}`
         );
         setQuotations(response.data);
       } catch (error) {

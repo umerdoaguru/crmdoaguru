@@ -23,7 +23,7 @@ const Dashboard = () => {
   };
   const getInvoiceData = () => {
     try {
-      const response = axios.get("https://crm.dentalguru.software/api/invoiceData");
+      const response = axios.get("http://localhost:9000/api/invoiceData");
     } catch (err) {}
   };
 

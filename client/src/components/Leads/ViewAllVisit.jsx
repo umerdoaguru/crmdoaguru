@@ -29,7 +29,7 @@ const ViewAllVisit = () => {
   const fetchvisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-visit/${id}`,
+        `http://localhost:9000/api/employe-visit/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const ViewAllVisit = () => {
     try {
       // Delete the visit
       const deleteResponse = await axios.delete(
-        `https://crm.dentalguru.software/api/employe-visit/${visit.id}`
+        `http://localhost:9000/api/employe-visit/${visit.id}`
       );
   
       if (deleteResponse.status === 200) {
@@ -67,7 +67,7 @@ const ViewAllVisit = () => {
   
       // Update visit status
       const updateVisitResponse = await axios.put(
-        `https://crm.dentalguru.software/api/updateVisitStatus/${visit.lead_id}`,
+        `http://localhost:9000/api/updateVisitStatus/${visit.lead_id}`,
         { visit: "pending" }
       );
   
@@ -81,7 +81,7 @@ const ViewAllVisit = () => {
   
       // Update lead status
       const updateLeadStatusResponse = await axios.put(
-        `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${visit.lead_id}`,
+        `http://localhost:9000/api/updateOnlyLeadStatus/${visit.lead_id}`,
         { lead_status: "pending" }
       );
   
@@ -127,7 +127,7 @@ const ViewAllVisit = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`https://crm.dentalguru.software/api/employe-visit`, modalData);
+      const response = await axios.put(`http://localhost:9000/api/employe-visit`, modalData);
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
         setRender(!render); // Refresh the list after updating

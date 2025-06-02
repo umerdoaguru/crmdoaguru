@@ -42,7 +42,7 @@ const token = adminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/employe-all-visit-admin`,
+        `http://localhost:9000/api/employe-all-visit-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const token = adminuser.token;
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee" ,{
+      const response = await axios.get("http://localhost:9000/api/employee" ,{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

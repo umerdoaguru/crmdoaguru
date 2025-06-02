@@ -58,7 +58,7 @@ const SuperClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/leads-super-admin`,
+        `http://localhost:9000/api/leads-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const SuperClosedDealReport = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
+      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const SuperClosedDealReport = () => {
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
-        "https://crm.dentalguru.software/api/getAllAdmins",
+        "http://localhost:9000/api/getAllAdmins",
         {
           headers: {
             'Content-Type': 'application/json',

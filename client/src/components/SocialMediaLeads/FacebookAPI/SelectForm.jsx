@@ -9,7 +9,7 @@ const FormSelector = ({  setLoading, setMe, setError, onFormSelect  }) => {
   // Fetch forms from backend
   const fetchForms = async () => {
     try {
-      const response = await axios.get('https://crm.dentalguru.software/api/forms');
+      const response = await axios.get('http://localhost:9000/api/forms');
       setForms(response.data.reverse());
     } catch (err) {
       console.error('Error fetching forms:', err);
@@ -45,7 +45,7 @@ const FormSelector = ({  setLoading, setMe, setError, onFormSelect  }) => {
 
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
+      const response = await axios.post('http://localhost:9000/api/leads/fetch', {
         formId: selectedFormId
       });
       setError('Fetch leads Done');

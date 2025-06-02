@@ -27,7 +27,7 @@ const VisitTable = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+      const response = await axios.get(`http://localhost:9000/api/employebyid-visit/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',

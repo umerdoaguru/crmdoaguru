@@ -13,7 +13,7 @@ const SuperLeadsToday = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("https://crm.dentalguru.software/api/leads-super-admin",
+        const response = await fetch("http://localhost:9000/api/leads-super-admin",
           {
             headers: {
               'Content-Type': 'application/json',

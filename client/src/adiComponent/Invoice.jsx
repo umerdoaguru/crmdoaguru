@@ -27,7 +27,7 @@ const LeadVisitChart = () => {
       setLoading(true); // Start loading
 
       try {
-        const response = await axios.get(`https://crm.dentalguru.software/api/employe-all-visit-admin`,
+        const response = await axios.get(`http://localhost:9000/api/employe-all-visit-admin`,
           {
             headers: {
               'Content-Type': 'application/json',

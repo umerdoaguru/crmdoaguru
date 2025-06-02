@@ -17,7 +17,7 @@ const EmployeeLeadsReport = () => {
     const fetchLeads = async () => {
       try {
         const response = await axios.get(
-          `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
+          `http://localhost:9000/api/employe-leads/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',

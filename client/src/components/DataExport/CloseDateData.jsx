@@ -56,7 +56,7 @@ const CloseData = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm.dentalguru.software/api/leads`,
+        `http://localhost:9000/api/leads`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const CloseData = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm.dentalguru.software/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -111,11 +111,11 @@ const CloseData = () => {
   
   const downloadExcel = () => {
     const columnMapping = {
-      lead_no: "Lead Number",
-      assignedTo: "Assigned To",
+      
       name: "Name",
       phone: "Phone",
       leadSource: "Lead Source",
+      assignedTo: "Assigned To",
       remark_status: "Remark Status",
       answer_remark: "Answer Remark",
       meeting_status: "Meeting Status",
@@ -260,15 +260,13 @@ const CloseData = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Number
+                 <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Name
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Name
-                </th>
+               
                
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -304,15 +302,13 @@ const CloseData = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {index + 1 + currentPage * leadsPerPage}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.lead_no}
+                 <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.assignedTo}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.name}
-                    </td>
+                  
                  
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}

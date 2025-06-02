@@ -24,7 +24,7 @@ const EmployeeInvoiceGraph = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
+          `http://localhost:9000/api/get-employee-invoice/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',
