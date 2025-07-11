@@ -37,7 +37,7 @@ const SuperAdEmployeemanagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllEmployees-super-admin",
+        "https://crm.dentalguru.software/api/getAllEmployees-super-admin",
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const SuperAdEmployeemanagement = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get("http://localhost:9000/api/checkEmail", {
+      const response = await axios.get("https://crm.dentalguru.software/api/checkEmail", {
         params: { email },
       });
       return response.data.exists;
@@ -123,13 +123,13 @@ const SuperAdEmployeemanagement = () => {
         // Update existing employee
         const employeeToUpdate = employees[editingIndex];
         response = await axios.put(
-          `http://localhost:9000/api/updateEmployee/${employeeToUpdate.employeeId}`,
+          `https://crm.dentalguru.software/api/updateEmployee/${employeeToUpdate.employeeId}`,
           newEmployee
         );
       } else {
         // Add new employee
         response = await axios.post(
-          "http://localhost:9000/api/addEmployee",
+          "https://crm.dentalguru.software/api/addEmployee",
           newEmployee
         );
       }
@@ -176,7 +176,7 @@ const SuperAdEmployeemanagement = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `http://localhost:9000/api/deleteEmployee/${employeeId}`
+          `https://crm.dentalguru.software/api/deleteEmployee/${employeeId}`
         );
         fetchEmployees(); // Fetch employees to update the list
       } catch (error) {

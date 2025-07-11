@@ -29,7 +29,7 @@ function Super_Single_Lead_Profile({id,closeModalLead }) {
    
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${id}`,
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function Super_Single_Lead_Profile({id,closeModalLead }) {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-follow-up-super-admin/${id}`,
+        `https://crm.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function Super_Single_Lead_Profile({id,closeModalLead }) {
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/remarks-super-admin/${id}`,
+        `https://crm.dentalguru.software/api/remarks-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ function Super_Single_Lead_Profile({id,closeModalLead }) {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit-super-admin/${id}`,
+        `https://crm.dentalguru.software/api/employe-visit-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -184,12 +184,7 @@ fetchFollowUp();
           {leads.map((lead, index) => (
             <div className="w-full lg:w-2/3 ">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-info">Lead Number</label>
-                  <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.lead_no}</p>
-                  </div>
-                </div>
+               
 
                 <div>
                   <label className="text-info">Name</label>
@@ -296,10 +291,11 @@ fetchFollowUp();
         <table className="min-w-full whitespace-nowrap bg-white border">
   <thead>
     <tr>
-      <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
-      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+
       <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
       <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+      <th className="px-6 py-3 border-b-2 border-gray-300">Email Id</th>
       <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
       <th className="px-6 py-3 border-b-2 border-gray-300">Remark Status</th>
       <th className="px-6 py-3 border-b-2 border-gray-300">Answer Remark</th>
@@ -328,10 +324,11 @@ fetchFollowUp();
   <tbody>
   {leads.map((lead, index) => (
   <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.lead_no}</td>
-    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
+
     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.name}</td>
     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.phone}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.assignedTo}</td>
+    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.email_id || "NULL"}</td>
     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.leadSource}</td>
     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.remark_status}</td>
     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{lead.answer_remark}</td>

@@ -58,7 +58,7 @@ const SuperClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads-super-admin`,
+        `https://crm.dentalguru.software/api/leads-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const SuperClosedDealReport = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const SuperClosedDealReport = () => {
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllAdmins",
+        "https://crm.dentalguru.software/api/getAllAdmins",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -150,10 +150,10 @@ const SuperClosedDealReport = () => {
   const downloadExcel = () => {
     // Map to rename keys for export
     const columnMapping = {
-      lead_no: "Lead Number",
-      assignedTo: "Assigned To",
+      
       name: "Name",
       phone: "Phone",
+      assignedTo: "Assigned To",
       leadSource: "Lead Source",
       remark_status: "Remark Status",
       answer_remark: "Answer Remark",
@@ -278,14 +278,12 @@ const SuperClosedDealReport = () => {
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Number
+                  Lead Name
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Name
-                </th>
+                
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source

@@ -61,7 +61,7 @@ function SuperLeadData() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function SuperLeadData() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ function SuperLeadData() {
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllAdmins",
+        "https://crm.dentalguru.software/api/getAllAdmins",
         {
           headers: {
             'Content-Type': 'application/json',

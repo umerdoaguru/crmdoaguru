@@ -52,7 +52,7 @@ function SuperAdminRoutes() {
         {/*super Admin routes by vinay */}
         <Route path="/" element={<SuperDash />} />
         <Route path="/super-admin-dashboard" element={<SuperDash />} />
-        <Route path="/super-admin-leads" element={<SuperAdminLead />} />
+        <Route path="/super-admin-leads" element={<SuperAdminLead />} />  
         <Route path="/super-admin-total-visit" element={<SuperAdminVisit />} />
         <Route path="/super-admin-total-lead" element={<SuperAdminTotalLead/>} />
 

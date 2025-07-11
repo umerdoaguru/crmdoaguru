@@ -26,7 +26,7 @@ const SuperAdminVisit = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employe-all-visit-super-admin`,
+      const response = await axios.get(`https://crm.dentalguru.software/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',

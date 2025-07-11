@@ -31,7 +31,7 @@ const ImportLeads = () => {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/employee-super-admin`, 
+      const res = await axios.get(`https://crm.dentalguru.software/api/employee-super-admin`, 
      {
           headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const handleEmployeeChange = (e) => {
   
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:9000/api/import-leads", formData, {
+      const res = await axios.post("https://crm.dentalguru.software/api/import-leads", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

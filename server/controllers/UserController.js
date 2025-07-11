@@ -816,61 +816,61 @@ const getnotes_text = (req, res) => {
   });
 };
 
-const createLead = (req, res) => {
-  const {
+// const createLead = (req, res) => {
+//   const {
    
-    name,
-    phone,
-    assignedTo,
-    leadSource,
-    employeeId,
-    subject,address,
-    createdTime,
-    actual_date,
-    assignedBy,
-    email_id
-  } = req.body;
- const email_id_value = email_id || null;
-  console.log(
-    name,
-    phone,
-    assignedTo,
-    leadSource,
-    employeeId,
-    subject,address,
-    createdTime,
-    actual_date,
-    assignedBy,);
-    console.log(email_id_value);
+//     name,
+//     phone,
+//     assignedTo,
+//     leadSource,
+//     employeeId,
+//     subject,address,
+//     createdTime,
+//     actual_date,
+//     assignedBy,
+//     email_id
+//   } = req.body;
+//  const email_id_value = email_id || null;
+//   console.log(
+//     name,
+//     phone,
+//     assignedTo,
+//     leadSource,
+//     employeeId,
+//     subject,address,
+//     createdTime,
+//     actual_date,
+//     assignedBy,);
+//     console.log(email_id_value);
     
   
-  const sql = `INSERT INTO leads (name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy,email_id) VALUES (?,?,?,?,?,?, ?, ?, ?, ?,?)`;
-  db.query(
-    sql,
-    [
+//   const sql = `INSERT INTO leads (name, phone, assignedTo, leadSource, employeeId,subject,address,createdTime,actual_date,assignedBy,email_id) VALUES (?,?,?,?,?,?, ?, ?, ?, ?,?)`;
+//   db.query(
+//     sql,
+//     [
     
-      name,
-      phone,
-      assignedTo,
-      leadSource,
-      employeeId,
-      subject,address,
-      createdTime,
-      actual_date,
-      assignedBy,
-      email_id_value
-    ],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error inserting data" });
-      } else {
-        res
-          .status(201)
-          .json({ success: true, message: "Lead data successfully submitted" });
-      }
-    }
-  );
-};
+//       name,
+//       phone,
+//       assignedTo,
+//       leadSource,
+//       employeeId,
+//       subject,address,
+//       createdTime,
+//       actual_date,
+//       assignedBy,
+//       email_id_value
+//     ],
+//     (err, results) => {
+//       if (err) {
+//         res.status(500).json({ error: "Error inserting data" });
+//       } else {
+//         res
+//           .status(201)
+//           .json({ success: true, message: "Lead data successfully submitted" });
+//       }
+//     }
+//   );
+// };
 //   const socialmediaLead = (req, res) => {
 //     const { lead_no, name, phone, assignedTo, leadSource, employeeId,subject ,createdTime} = req.body;
 //     const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,subject) VALUES (?,?,?, ?, ?, ?, ?,?)`;
@@ -882,6 +882,72 @@ const createLead = (req, res) => {
 //         }
 //     });
 // };
+const createLead = (req, res) => {
+  const {
+    name,
+    phone,
+    assignedTo,
+    leadSource,
+    employeeId,
+    subject,
+    address,
+    createdTime,
+    actual_date,
+    assignedBy,
+    email_id,
+  } = req.body;
+
+  const email_id_value = email_id || null;
+
+  // First check if the lead already exists
+  const checkSql = `SELECT * FROM leads WHERE name = ? AND phone = ? AND (email_id = ? OR ? IS NULL OR email_id IS NULL)`;
+
+  db.query(
+    checkSql,
+    [name, phone, email_id_value, email_id_value],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error checking for duplicate lead" });
+      }
+
+      // If found, insert with status = 'duplicate lead'
+      const isDuplicate = result.length > 0;
+      const lead_status = isDuplicate ? "duplicate lead" : "pending";
+
+      const insertSql = `INSERT INTO leads (name, phone, assignedTo, leadSource, employeeId, subject, address, createdTime, actual_date, assignedBy, email_id, lead_status)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      db.query(
+        insertSql,
+        [
+          name,
+          phone,
+          assignedTo,
+          leadSource,
+          employeeId,
+          subject,
+          address,
+          createdTime,
+          actual_date,
+          assignedBy,
+          email_id_value,
+          lead_status,
+        ],
+        (err, results) => {
+          if (err) {
+            res.status(500).json({ error: "Error inserting data" });
+          } else {
+            res.status(201).json({
+              success: true,
+              message: `Lead submitted. Status: ${lead_status}`,
+              lead_status,
+            });
+          }
+        }
+      );
+    }
+  );
+};
 
 const getleadbyid = (req, res) => {
   try {

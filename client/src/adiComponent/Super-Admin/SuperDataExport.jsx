@@ -44,7 +44,7 @@ function SuperDataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function SuperDataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee-super-admin`,
+      const response = await axios.get(`https://crm.dentalguru.software/api/employee-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ function SuperDataExport() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation-data`
+        `https://crm.dentalguru.software/api/quotation-data`
       );
       setQuotation(response.data);
     } catch (error) {
@@ -84,7 +84,7 @@ function SuperDataExport() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-data`
+        `https://crm.dentalguru.software/api/invoice-data`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -94,7 +94,7 @@ function SuperDataExport() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-all-visit-super-admin`,
+        `https://crm.dentalguru.software/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',

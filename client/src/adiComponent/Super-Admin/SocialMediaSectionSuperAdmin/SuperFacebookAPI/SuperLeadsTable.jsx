@@ -25,7 +25,7 @@ const SuperLeadsTable = () => {
   // Fetch leads based on selected form ID
   // const fetchLeadsByFormId = async (formId) => {
   //   try {
-  //     const response = await axios.get(`http://localhost:9000/api/Leads-data-fetch/${formId}`);
+  //     const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch/${formId}`);
   //     setLeads(response.data);
   //   } catch (err) {
   //     console.error('Error fetching leads:', err);
@@ -53,7 +53,7 @@ const SuperLeadsTable = () => {
 
   const fetchLeadsByFormId = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/Leads-data-fetch-super-admin/${gotId}`,
+      const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch-super-admin/${gotId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const SuperLeadsTable = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const SuperLeadsTable = () => {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ const SuperLeadsTable = () => {
     }
     try {
       setLoadingsave(true)
-      await axios.post("http://localhost:9000/api/leads", {
+      await axios.post("https://crm.dentalguru.software/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,
@@ -203,7 +203,7 @@ setLoadingsave(false)
   const saveIntoDB = async () => {
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('http://localhost:9000/api/leads/fetch', {
+      const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
         formId: gotId,
       });
       setLoading(true);
@@ -251,7 +251,7 @@ setLoadingsave(false)
   // const saveIntoDB = async () => {
   //   try {
   //     // Fetch leads from Meta API via backend
-  //     const response = await axios.post('http://localhost:9000/api/leads/fetch', {
+  //     const response = await axios.post('https://crm.dentalguru.software/api/leads/fetch', {
   //       formId: gotId,
   //     });
   //     setLoading(true);

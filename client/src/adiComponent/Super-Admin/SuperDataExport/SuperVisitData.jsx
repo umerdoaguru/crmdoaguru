@@ -43,7 +43,7 @@ const [admins, setAdmins] = useState([]);
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-all-visit-super-admin`,
+        `https://crm.dentalguru.software/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const [admins, setAdmins] = useState([]);
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const [admins, setAdmins] = useState([]);
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllAdmins",
+        "https://crm.dentalguru.software/api/getAllAdmins",
         {
           headers: {
             'Content-Type': 'application/json',

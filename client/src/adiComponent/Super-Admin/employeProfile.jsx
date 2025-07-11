@@ -36,7 +36,7 @@ const token = superadminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads-super-admin/${employeeId}`,
+        `https://crm.dentalguru.software/api/employe-leads-super-admin/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const token = superadminuser.token;
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/employeeProfile-super-admin/${employeeId}`,
+          `https://crm.dentalguru.software/api/employeeProfile-super-admin/${employeeId}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -162,23 +162,26 @@ const token = superadminuser.token;
                       S.no
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                      Lead Number
+                      Lead Id
+                    </th>
+                         <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      Name
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                       Assigned To
                     </th>
+                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      Phone
+                    </th> 
+                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      Lead Source
+                    </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                       Date
                     </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                      Phone
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                      Lead Source
-                    </th>
+              
+                   
+                  
                   </tr>
                 </thead>
                 <tbody>
@@ -194,24 +197,27 @@ const token = superadminuser.token;
                         to={`/super-admin-lead-single-data/${lead.lead_id}`}
                       >
                         <td className="px-6 py-4 border-b border-gray-200  underline text-[blue]">
-                          {lead.lead_no}
+                          {lead.lead_id}
                         </td>
-                      </Link>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.assignedTo}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
-                      </td>
+                      </Link>   
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.phone}
+                        {lead.assignedTo}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        {lead.phone}
+                      </td>  
+                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.leadSource}
                       </td>
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
+                      </td>
+                   
+                      
+                   
                     </tr>
                   ))}
                 </tbody>

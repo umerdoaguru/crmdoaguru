@@ -87,8 +87,8 @@ function SuperEmployeeLeads() {
     try {
       const response = await axios.get(
 
-          //  `http://localhost:9000/api/employe-leads/${id}`
-            "http://localhost:9000/api/leads-super-admin",
+          //  `https://crm.dentalguru.software/api/employe-leads/${id}`
+            "https://crm.dentalguru.software/api/leads-super-admin",
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ function SuperEmployeeLeads() {
  
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ function SuperEmployeeLeads() {
     const fetchAdmins = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/getAllAdmins",
+          "https://crm.dentalguru.software/api/getAllAdmins",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ function SuperEmployeeLeads() {
 
   const updateAnswerRemark = async () => {
     try {
-      const response = await axios.put(`http://localhost:9000/api/updateOnlyAnswerRemark`, modalData);
+      const response = await axios.put(`https://crm.dentalguru.software/api/updateOnlyAnswerRemark`, modalData);
       if (response.status === 200) {
         cogoToast.success("AnswerRemark updated successfully!");
        fetchLeads();
@@ -415,7 +415,7 @@ const saveChanges = async () => {
     
      
         // Create new lead
-        await axios.post("http://localhost:9000/api/leads", leadData);
+        await axios.post("https://crm.dentalguru.software/api/leads", leadData);
 
         // Construct WhatsApp message link with encoded parameters
         const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Project:%20${currentLead.subject}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
@@ -443,7 +443,7 @@ const handleDeleteClick = async (id) => {
   );
   if (isConfirmed) {
     try {
-      await axios.delete(`http://localhost:9000/api/leads/${id}`);
+      await axios.delete(`https://crm.dentalguru.software/api/leads/${id}`);
       fetchLeads(); // Refresh the list after deletion
     } catch (error) {
       console.error("Error deleting lead:", error);
@@ -618,6 +618,7 @@ const closeModalLead = () => {
                 >
                   <option value="">All Lead Status</option>
                   <option value="pending">Pending</option>
+                  <option value="duplicate lead">Duplicate Lead</option>
                   <option value="active lead">Active Lead</option>
                   <option value="calling done">Calling Done</option>
                   <option value="site visit done">Site Visit Done</option>

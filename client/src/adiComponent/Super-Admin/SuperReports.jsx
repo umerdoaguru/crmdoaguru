@@ -159,7 +159,7 @@ const SuperReports = () =>
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads");
+        const response = await axios.get("https://crm.dentalguru.software/api/leads");
         setLeads(response.data);
       } catch (error) {
         console.error("Error fetching leads:", error);
@@ -168,7 +168,7 @@ const SuperReports = () =>
   
     const fetchEmployee = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/employee`);
+        const response = await axios.get(`https://crm.dentalguru.software/api/employee`);
         setEmployee(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
@@ -178,7 +178,7 @@ const SuperReports = () =>
     const fetchQuotation = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/quotation-data`
+          `https://crm.dentalguru.software/api/quotation-data`
         );
         setQuotation(response.data);
       } catch (error) {
@@ -189,7 +189,7 @@ const SuperReports = () =>
     const fetchInvoice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-data`
+          `https://crm.dentalguru.software/api/invoice-data`
         );
         setInvoice(response.data);
       } catch (error) {
@@ -199,7 +199,7 @@ const SuperReports = () =>
     const fetchVisit = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/employe-all-visit`
+          `https://crm.dentalguru.software/api/employe-all-visit`
         );
         console.log(response.data);
         setVisit(response.data);

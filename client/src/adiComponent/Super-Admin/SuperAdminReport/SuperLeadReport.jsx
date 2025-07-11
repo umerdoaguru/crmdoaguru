@@ -57,7 +57,7 @@ function SuperLeadReport() {
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+        const response = await axios.get("https://crm.dentalguru.software/api/leads-super-admin",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function SuperLeadReport() {
   
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+        const response = await axios.get("https://crm.dentalguru.software/api/employee-super-admin",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function SuperLeadReport() {
     const fetchAdmins = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/api/getAllAdmins",
+          "https://crm.dentalguru.software/api/getAllAdmins",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ function SuperLeadReport() {
       }
   
       
-      filtered = filtered.filter((lead) => lead.lead_status === "completed");
+      // filtered = filtered.filter((lead) => lead.lead_status === "completed");
       filtered = filterByDuration(filtered, duration);
   
       setFilteredLeads(filtered);
@@ -145,11 +145,11 @@ function SuperLeadReport() {
     // Excel download function
     const downloadExcel = () => {
         const columnMapping = {
-            lead_no: "Lead Number",
-            assignedTo: "Assigned To",
-            name: "Name",
-            phone: "Phone",
-            leadSource: "Lead Source",
+         
+          name: "Name",
+          phone: "Phone",
+          leadSource: "Lead Source",
+          assignedTo: "Assigned To",
             remark_status: "Remark Status",
             answer_remark: "Answer Remark",
             meeting_status: "Meeting Status",
@@ -263,9 +263,7 @@ function SuperLeadReport() {
               <thead>
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Number
-                  </th>
+                
                   <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Assigned To
@@ -303,9 +301,7 @@ function SuperLeadReport() {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {index + 1 + currentPage * leadsPerPage}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.lead_no}
-                      </td>
+                  
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
                       </td>
@@ -337,19 +333,28 @@ function SuperLeadReport() {
           {/* Pagination */}
           {pageCount > 1 && (
             <div className="mt-4">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                previousClassName={"prev"}
-                nextClassName={"next"}
-              />
+             <div className="mt-2 mb-2 flex justify-center">
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          nextClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextLinkClassName={"page-link"}
+          breakClassName={"page-item"}
+          breakLinkClassName={"page-link"}
+        />
+
+      </div>
             </div>
           )}
         </div>

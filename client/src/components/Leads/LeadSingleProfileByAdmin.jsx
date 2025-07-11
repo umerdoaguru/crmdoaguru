@@ -208,7 +208,7 @@ const adminuser = useSelector((state) => state.auth.user);
   }, [id]);
   // const fetchLeads = async () => {
   //   try {
-  //     const response = await axios.get(http://localhost:9000/api/leads/${id});
+  //     const response = await axios.get(https://crm.dentalguru.software/api/leads/${id});
   //     setLeads(response.data);
   //     console.log(response);
   //   } catch (error) {
@@ -218,7 +218,7 @@ const adminuser = useSelector((state) => state.auth.user);
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads/${id}`,
+      const response = await axios.get(`https://crm.dentalguru.software/api/leads/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ const adminuser = useSelector((state) => state.auth.user);
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit-admin/${id}`,
+        `https://crm.dentalguru.software/api/employe-visit-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -274,7 +274,7 @@ const adminuser = useSelector((state) => state.auth.user);
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-follow-up-admin/${id}`,
+        `https://crm.dentalguru.software/api/employe-follow-up-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -292,7 +292,7 @@ const adminuser = useSelector((state) => state.auth.user);
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/remarks-admin/${id}`,
+        `https://crm.dentalguru.software/api/remarks-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -447,7 +447,7 @@ const adminuser = useSelector((state) => state.auth.user);
       }
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `http://localhost:9000/api/updateLeadStatus/${currentLead.lead_id}`,
+        `https://crm.dentalguru.software/api/updateLeadStatus/${currentLead.lead_id}`,
         leadData
       );
 
@@ -483,7 +483,7 @@ const adminuser = useSelector((state) => state.auth.user);
     try {
       // First API call: Create a visit
       const response = await axios.post(
-        `http://localhost:9000/api/employe-visit`,
+        `https://crm.dentalguru.software/api/employe-visit`,
         {
           lead_id: leads[0].lead_id,
           name: leads[0].name,
@@ -500,7 +500,7 @@ const adminuser = useSelector((state) => state.auth.user);
   
         // Second API call: Update visit status
         const updateResponse = await axios.put(
-          `http://localhost:9000/api/updateVisitStatus/${leads[0].lead_id}`,
+          `https://crm.dentalguru.software/api/updateVisitStatus/${leads[0].lead_id}`,
           { visit: visitLead.visit }
         );
   
@@ -515,7 +515,7 @@ const adminuser = useSelector((state) => state.auth.user);
   
         // Third API call: Update lead status
         const updateLeadStatusResponse = await axios.put(
-          `http://localhost:9000/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
+          `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
           { lead_status: "site visit done" }
         );
   
@@ -576,7 +576,7 @@ const adminuser = useSelector((state) => state.auth.user);
     try {
       // Send updated data to the backend using Axios
       const response = await axios.post(
-        `http://localhost:9000/api/employe-follow-up`,
+        `https://crm.dentalguru.software/api/employe-follow-up`,
         {
           lead_id: leads[0].lead_id,
           name: leads[0].name,
@@ -594,7 +594,7 @@ const adminuser = useSelector((state) => state.auth.user);
   
         // Update the Follow Up status after saving the Follow Up
         const putResponse = await axios.put(
-          `http://localhost:9000/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
+          `https://crm.dentalguru.software/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
           { follow_up_status: "in progress" }
         );
   
@@ -632,7 +632,7 @@ const adminuser = useSelector((state) => state.auth.user);
   
     try {
 
-        const response = await axios.post(`http://localhost:9000/api/remarks`,
+        const response = await axios.post(`https://crm.dentalguru.software/api/remarks`,
         {
           lead_id: leads[0].lead_id,
           name: leads[0].name,

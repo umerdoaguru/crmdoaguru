@@ -60,7 +60,7 @@ function LeadData() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads",
+      const response = await axios.get("https://crm.dentalguru.software/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function LeadData() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee",
+      const response = await axios.get("https://crm.dentalguru.software/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',

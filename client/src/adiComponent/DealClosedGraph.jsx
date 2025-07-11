@@ -61,7 +61,7 @@ const DealClosedGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads`,
+        `https://crm.dentalguru.software/api/leads`,
         {
           headers: {
             'Content-Type': 'application/json',

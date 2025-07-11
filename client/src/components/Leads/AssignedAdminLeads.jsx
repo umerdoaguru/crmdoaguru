@@ -53,7 +53,7 @@ function AssignedAdminLeads() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads-admin/${adminuser.id}`,
+        `https://crm.dentalguru.software/api/employe-leads-admin/${adminuser.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ function AssignedAdminLeads() {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employeeself",
+      const response = await axios.get("https://crm.dentalguru.software/api/employeeself",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -86,14 +86,14 @@ function AssignedAdminLeads() {
     try {
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `http://localhost:9000/api/updateOnlyLeadStatus/${lead.lead_id}`,
+        `https://crm.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
         { lead_status: "active lead" }
       );
 
       if (response.status === 200) {
         console.log("Updated successfully:", response.data);
         cogoToast.success("Lead status updated successfully");
-        navigate(`/employee-lead-single-data/${lead.lead_id}`);
+        navigate(`/admin-lead-single-data/${lead.lead_id}`);
       } else {
         console.error("Error updating:", response.data);
         cogoToast.error("Failed to update the lead status.");

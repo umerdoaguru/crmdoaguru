@@ -57,7 +57,7 @@ function LeadReport() {
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads",
+        const response = await axios.get("https://crm.dentalguru.software/api/leads",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function LeadReport() {
   
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/employee",
+        const response = await axios.get("https://crm.dentalguru.software/api/employee",
           {
             headers: {
               'Content-Type': 'application/json',
@@ -312,19 +312,28 @@ function LeadReport() {
           {/* Pagination */}
           {pageCount > 1 && (
             <div className="mt-4">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                previousClassName={"prev"}
-                nextClassName={"next"}
-              />
+              <div className="mt-2 mb-2 flex justify-center">
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          nextClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextLinkClassName={"page-link"}
+          breakClassName={"page-item"}
+          breakLinkClassName={"page-link"}
+        />
+
+      </div>
             </div>
           )}
         </div>

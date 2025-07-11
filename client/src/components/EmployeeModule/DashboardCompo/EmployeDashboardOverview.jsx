@@ -28,7 +28,7 @@ const EmployeeOverview = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads/${EmpId.id}`,
+        `https://crm.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const EmployeeOverview = () => {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/get-quotation-byEmploye/${EmpId.id}`,
+        `https://crm.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const EmployeeOverview = () => {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/get-employee-invoice/${EmpId.id}`,
+        `https://crm.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const EmployeeOverview = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employebyid-visit/${EmpId.id}`,
+        `https://crm.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
