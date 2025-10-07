@@ -21,18 +21,13 @@ const LeadsTable = () => {
   
   const [leadsAssigned, setLeadsAssigned] = useState([]);
   const [refreshLeads, setRefreshLeads] = useState(false);  // State to trigger refresh
+const [showPopupBulk, setShowPopupBulk] = useState(false);
+const [bulkAssignData, setBulkAssignData] = useState({
+  assignedTo: "",
+  employeeId: "",
+  createdTime: "",
+});
 
-
-  // Fetch leads based on selected form ID
-  // const fetchLeadsByFormId = async (formId) => {
-  //   try {
-  //     const response = await axios.get(`https://crm.dentalguru.software/api/Leads-data-fetch/${formId}`);
-  //     setLeads(response.data);
-  //   } catch (err) {
-  //     console.error('Error fetching leads:', err);
-  //     setError('Failed to fetch leads');
-  //   }
-  // };
   const [showPopup, setShowPopup] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -224,7 +219,10 @@ setLoadingsave(false)
     setShowPopup(false);
     setSelectedLead(null);
   };
-
+  const closePopupBulk = () => {
+    setShowPopupBulk(false);
+        setBulkAssignData({});
+  };
   const filteredLeads = leads.filter(
     (lead) =>
       !leadsAssigned.some((assigned) => assigned.lead_no === lead.lead_id)
@@ -262,6 +260,82 @@ setLoadingsave(false)
   //     console.error('Error fetching leads:', err);
   //   }
   // }
+  const handleBulkButtonClick = () => {
+  if (filteredLeads.length === 0) {
+    alert("Please Select Form Id");
+    return;
+  }
+  setShowPopupBulk(true);
+};
+const handleBulkInputChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "assignedTo") {
+    const selectedEmployee = employees.find(
+      (employee) => employee.name === value
+    );
+
+    if (selectedEmployee) {
+      setBulkAssignData((prev) => ({
+        ...prev,
+        assignedTo: value,
+        employeeId: selectedEmployee.employeeId,   // employeeId set
+
+      }));
+    } else {
+      setBulkAssignData((prev) => ({
+        ...prev,
+        assignedTo: value,
+        employeeId: "",
+       
+      }));
+    }
+  } else {
+    setBulkAssignData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+};
+
+
+
+const handleBulkAssignSave = async () => {
+   if (!bulkAssignData.assignedTo) {
+      alert("Please assign the lead to an employee."); // Show an alert message
+      return; // Stop further execution if the field is empty
+    }
+    if (!bulkAssignData.createdTime) {
+      alert("Please Select Assign Date."); // Show an alert message
+      return; // Stop further execution if the field is empty
+    }
+  try {
+    const leadsData = filteredLeads.map((selectedLead) => ({
+      lead_no: selectedLead.lead_id,
+      assignedTo: bulkAssignData.assignedTo,
+      employeeId: bulkAssignData.employeeId,
+      createdTime: bulkAssignData.createdTime,
+      actual_date: moment(selectedLead.created_time).format("YYYY-MM-DD"),
+      name: selectedLead.full_name,
+      phone: selectedLead.phone_number.replace("+91", ""),
+      leadSource: "Meta Ads",
+      subject: formName,
+      address: selectedLead.street_address,
+      assignedBy: "Super Admin",
+      
+    }));
+
+    const res = await axios.post("https://crm.dentalguru.software/api/meta-bulk-upload-lead", { leads: leadsData });
+    alert("✅ Leads bulk has been successfully Uploaded");
+    setShowPopupBulk(false);
+    setBulkAssignData({})
+   fetchLeadsByFormId(); // Refresh the list
+      fetchLeadassigned();
+  } catch (error) {
+    console.error("Error bulk assigning leads:", error);
+    alert("Error bulk assigning leads");
+  }
+};
 
   useEffect(() => {
     saveIntoDB();
@@ -306,7 +380,20 @@ setLoadingsave(false)
     </div>
       
       <h1 className="text-2xl font-bold mb-4">Select Form to Fetch Leads</h1>
-
+  <div style={{ textAlign:"right" }}>
+        <button
+          onClick={handleBulkButtonClick}
+          style={{
+            padding: "10px 20px",
+            background: "green",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Bulk Assign Leads
+        </button>
+      </div>
       {/* {error && <p className="text-red-500 mb-4">{error}</p>} */}
 
       {/* <FormSelector setLoading={setLoading} setMe={setGotId} setError={setError} onFormSelect={handleFormSelect} /> */}
@@ -532,7 +619,64 @@ setLoadingsave(false)
         </div>
       )}
 
-    
+        
+{showPopupBulk && (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div className="w-full max-w-md p-6 mx-2 bg-white rounded-lg shadow-lg">
+      <h2 className="text-xl mb-4">Bulk Assign Settings</h2>
+
+      <label className="block mb-2">Assigned To</label>
+      <select
+        name="assignedTo"
+        value={bulkAssignData.assignedTo}
+        onChange={handleBulkInputChange}
+        className="w-full border px-3 py-2 mb-4 rounded"
+      >
+        <option value="">Select Employee</option>
+        {employees.map((employee) => (
+          <option key={employee.employee_id} value={employee.name}>
+            {employee.name}
+          </option>
+        ))}
+      </select>
+
+     
+ <label className="block mb-2">Employee ID</label>
+      <input
+        type="text"
+        name="employeeId"
+        value={bulkAssignData.employeeId}
+        onChange={handleBulkInputChange}
+        className="w-full border px-3 py-2 mb-4 rounded"
+        disabled
+      />
+      <label className="block mb-2">Assign Date</label>
+      <input
+        type="date"
+        name="createdTime"
+        value={bulkAssignData.createdTime}
+        onChange={handleBulkInputChange}
+        className="w-full border px-3 py-2 mb-4 rounded"
+      />
+
+      <div className="flex justify-end">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+          onClick={handleBulkAssignSave}
+        >
+          Save
+        </button>
+        <button
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+          onClick={closePopupBulk}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
     
     </div>

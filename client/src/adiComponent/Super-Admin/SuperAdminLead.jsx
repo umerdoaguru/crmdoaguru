@@ -276,8 +276,9 @@ function SuperAdminLead() {
                   className="border rounded-2xl p-2 w-full"
                 >
                   <option value="">All Lead Sources</option>
-                  <option value="Facebook Campaign">Facebook Campaign</option>
-                  <option value="One Realty Website">One Realty Website</option>
+                  <option value="Facebook">Facebook</option>
+               <option value="Meta Ads">Meta Ads</option>
+                    <option value="Google Ads">Google Ads</option>
                   <option value="Trade Shows">Trade Shows</option>
                   <option value="Cold Calling">Cold Calling</option>
                   <option value="Email Campaigns">Email Campaigns</option>
@@ -573,6 +574,8 @@ function SuperAdminLead() {
                     <option value="Social Media">Social Media</option>
                     <option value="Referrals">Referrals</option>
                     <option value="Cold Calling">Cold Calling</option>
+                     <option value="Meta Ads">Meta Ads</option>
+                    <option value="Google Ads">Google Ads</option>
                     <option value="Email Campaigns">Email Campaigns</option>
                     <option value="Networking Events">Networking Events</option>
                     <option value="Paid Advertising">Paid Advertising</option>

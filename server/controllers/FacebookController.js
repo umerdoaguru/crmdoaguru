@@ -176,4 +176,63 @@ const extractFieldValue = (fieldData, fieldName) => {
   return field ? field.values[0] : '';
 };
 
-module.exports = { saveForm,updateForm,deleteForm, getAllForms, fetchLeads, getLeadsByFormId };
+const MetabulkAssignLeads = (req, res) => {
+  const leads = req.body.leads; // Array of lead objects
+
+  if (!Array.isArray(leads) || leads.length === 0) {
+    return res.status(400).json({ error: "No leads provided" });
+  }
+
+  const values = leads.map((lead) => [
+    lead.lead_no || null,
+    lead.assignedTo || null,
+    lead.employeeId || null,
+    lead.createdTime || null,
+    lead.actual_date || null,
+    lead.name || null,
+    lead.phone || null,
+    lead.leadSource || null,
+    lead.subject || null,
+    lead.address || null,
+    lead.assignedBy || null,
+  ]);
+
+  console.log(values);
+  
+  const sql = `
+    INSERT INTO leads 
+      (lead_no, assignedTo, employeeId, createdTime, actual_date, name, phone, leadSource, subject, address, assignedBy)
+    VALUES ?
+    ON DUPLICATE KEY UPDATE 
+      lead_no = VALUES(lead_no),
+      assignedTo = VALUES(assignedTo),
+      employeeId = VALUES(employeeId),
+      createdTime = VALUES(createdTime),
+      actual_date = VALUES(actual_date),
+      name = VALUES(name),
+      phone = VALUES(phone),
+      leadSource = VALUES(leadSource),
+      subject = VALUES(subject),
+      address = VALUES(address),
+      assignedBy = VALUES(assignedBy)
+  `;
+
+
+  db.query(sql, [values], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Error inserting/updating leads",
+        details: err.sqlMessage,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      affectedRows: result.affectedRows,
+      message: `${result.affectedRows} leads processed successfully`,
+    });
+  });
+};
+
+
+
+module.exports = { saveForm,updateForm,deleteForm, getAllForms, fetchLeads, getLeadsByFormId,MetabulkAssignLeads };

@@ -1,5 +1,5 @@
 const express = require('express');
-const { saveForm, getAllForms, fetchLeads, getLeadsByFormId, updateForm, deleteForm } = require('../controllers/FacebookController');
+const { saveForm, getAllForms, fetchLeads, getLeadsByFormId, updateForm, deleteForm, MetabulkAssignLeads } = require('../controllers/FacebookController');
 const authenticateAdmin = require('../Middleware/authenticateAdmin');
 const authenticateSuperAdmin = require('../Middleware/authenticateSuperAdmin');
 const router = express.Router();
@@ -18,5 +18,9 @@ router.post('/leads/fetch', fetchLeads);
 // Route to fetch leads by form ID
 router.get('/Leads-data-fetch-admin/:formId', authenticateAdmin,getLeadsByFormId);
 router.get('/Leads-data-fetch-super-admin/:formId',authenticateSuperAdmin, getLeadsByFormId);
+
+
+router.post('/meta-bulk-upload-lead', MetabulkAssignLeads);
+
 
 module.exports = router;

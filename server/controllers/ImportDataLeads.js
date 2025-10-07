@@ -24,9 +24,9 @@ const importLeads = async (req, res) => {
   if (typeof excelDate === "number") {
     // Excel serial date
     return moment(new Date((excelDate - 25569) * 86400 * 1000)).format("YYYY-MM-DD");
-  } else if (moment(excelDate, "DD-MMM-YY", true).isValid()) {
+  } else if (moment(excelDate, "DD-MM-YYYY", true).isValid()) {
     // Handles format like '26-Apr-25'
-    return moment(excelDate, "DD-MMM-YY").format("YYYY-MM-DD");
+    return moment(excelDate, "DD-MM-YYYY").format("YYYY-MM-DD");
   } else {
     return null;
   }

@@ -82,21 +82,10 @@ const deleteWebsiteAPI = (req, res) => {
 
 
 
-
-// Fetch all Website Api  from the database
-const getwebsite_api = (req, res) => {
-  db.query('SELECT * FROM website_api', (err, results) => {
-    if (err) {
-      console.error('Error fetching Website Api :', err);
-      return res.status(500).json({ error: 'Failed to fetch Website Api ' });
-    }
-    res.status(200).json(results);
-  });
-};
+     
 
 
 
 
 
-
-module.exports = { saveWebsiteAPI,updateWebsiteAPI,deleteWebsiteAPI, getwebsite_api};
+module.exports = { saveWebsiteAPI,updateWebsiteAPI,deleteWebsiteAPI};

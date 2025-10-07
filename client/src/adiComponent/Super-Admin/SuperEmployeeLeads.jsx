@@ -564,15 +564,14 @@ const closeModalLead = () => {
                 >
                    <option value="">Select Lead Source</option>
                      <option value="Facebook">Facebook</option>
-                    <option value="One Realty Website">
-                      One Realty Website
-                    </option>
-                    <option value="99 Acres">
-                    99 Acres
-                    </option>
+                     <option value="Scrap">Scrap</option>
+                     <option value="Organic">Organic</option>
+
                     <option value="Referrals">Referrals</option>
                     <option value="Cold Calling">Cold Calling</option>
                     <option value="Email Campaigns">Email Campaigns</option>
+                     <option value="Meta Ads">Meta Ads</option>
+                    <option value="Google Ads">Google Ads</option>
                     <option value="Networking Events">Networking Events</option>
                     <option value="Paid Advertising">Paid Advertising</option>
                     <option value="Content Marketing">Content Marketing</option>
@@ -1040,6 +1039,8 @@ const closeModalLead = () => {
                     <option value="Referrals">Referrals</option>
                     <option value="Cold Calling">Cold Calling</option>
                     <option value="Email Campaigns">Email Campaigns</option>
+                     <option value="Meta Ads">Meta Ads</option>
+                    <option value="Google Ads">Google Ads</option>
                     <option value="Networking Events">Networking Events</option>
                     <option value="Paid Advertising">Paid Advertising</option>
                     <option value="Content Marketing">Content Marketing</option>
